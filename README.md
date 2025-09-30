@@ -37,6 +37,7 @@ npm install
 
 3. Start the server:
 ```bash
+npm install -g nodemon
 npm start
 ```
 
@@ -62,14 +63,14 @@ cd celestia-2025-website
 
 3. Add the upstream remote to keep your fork updated:
 ```bash
-git remote add upstream https://github.com/ORIGINAL-OWNER/celestia-2025-website.git
+git remote add upstream https://github.com/aakarshit15/celestia-2025-website.git
 ```
 
 #### Option 2: Direct Clone and Branch
 
 1. Clone the main repository directly:
 ```bash
-git clone https://github.com/ORIGINAL-OWNER/celestia-2025-website.git
+git clone https://github.com/aakarshit15/celestia-2025-website.git
 cd celestia-2025-website
 ```
 
@@ -78,7 +79,7 @@ cd celestia-2025-website
 git checkout -b dev/YOUR-GITHUB-ID
 git pull origin main
 ```
-####Note: If your are choosing option 2, then you will work in your branch only and you will never switch to main branch
+#### Note: If your are choosing option 2, then you will work in your branch only and you will never switch to main branch
 
 ### Before Making Changes
 
@@ -99,7 +100,11 @@ git checkout dev/YOUR-GITHUB-ID  # if not in your branch
 git pull origin main
 ```
 
-### Committing Changes
+### Merge Conflicts
+
+1. Try to solve on your own, if nahi ho raha then approach any mentor.
+
+### Committing Changes (Do this only after solving all merge conflicts)
 
 1. Check the status of your changes:
 ```bash
@@ -139,7 +144,7 @@ git push origin dev/<your-github-id>
    - Base repository: original repository
    - Base branch: main
    - Head repository: your fork
-   - Compare branch: your feature branch
+   - Compare branch: main (of your forked repository)
 
    If working with a dev branch (Option 2):
    - Base branch: main
@@ -162,7 +167,3 @@ git push origin dev/<your-github-id>
 4. Reference any related issues
 5. Respond to review comments promptly
 6. Keep your PR up to date with the main branch
-
-### Merge Conflicts
-
-1. Try to solve on your own, if nahi ho raha then approach any mentor.
