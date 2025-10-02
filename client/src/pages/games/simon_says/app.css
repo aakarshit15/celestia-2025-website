@@ -1,0 +1,307 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    transition: background 0.3s ease;
+}
+
+body.game-over-flash {
+    background: linear-gradient(to bottom, #7f1d1d, #7f1d1d, #7f1d1d) !important;
+}
+
+.game-container {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #312e81, #581c87, #831843);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.stars {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    background: #fef08a;
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+.decoration {
+    position: absolute;
+    font-size: 60px;
+    opacity: 0.2;
+    animation: float 3s ease-in-out infinite;
+}
+
+.decoration.top-left {
+    top: 40px;
+    left: 40px;
+}
+
+.decoration.bottom-right {
+    bottom: 40px;
+    right: 40px;
+    animation-delay: 1s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    z-index: 10;
+}
+
+h1 {
+    font-size: 60px;
+    font-weight: bold;
+    background: linear-gradient(to right, #fde047, #f9a8d4, #c084fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+    animation: pulse 2s ease-in-out infinite;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+h2 {
+    font-size: 28px;
+    color: #fef08a;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.start-message {
+    font-size: 20px;
+    color: #fbcfe8;
+    margin-top: 20px;
+    animation: pulse 2s ease-in-out infinite;
+    text-align: center;
+}
+
+.start-btn {
+    background: linear-gradient(to right, #8b5cf6, #ec4899);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.start-btn:hover {
+    background: linear-gradient(to right, #7c3aed, #db2777);
+    transform: scale(1.05);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+.start-btn:active {
+    transform: scale(0.98);
+}
+
+.level-display {
+    margin-top: 20px;
+}
+
+.level-number {
+    font-size: 36px;
+    color: #fde047;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.level-subtitle {
+    font-size: 18px;
+    color: #fbcfe8;
+    margin-top: 10px;
+}
+
+.game-over-box {
+    margin-top: 20px;
+    background: rgba(127, 29, 29, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 10px;
+    border: 4px solid #fbbf24;
+}
+
+.game-over-title {
+    font-size: 28px;
+    color: #fde047;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.game-over-score {
+    font-size: 24px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.score-highlight {
+    color: #fde047;
+    font-weight: bold;
+}
+
+.restart-btn {
+    background: linear-gradient(to right, #eab308, #f97316);
+    color: white;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.restart-btn:hover {
+    background: linear-gradient(to right, #ca8a04, #ea580c);
+    transform: scale(1.05);
+}
+
+.restart-btn:active {
+    transform: scale(0.98);
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 600px;
+    z-index: 10;
+}
+
+.gem-btn {
+    width: 120px;
+    height: 120px;
+    border-radius: 20px;
+    border: 4px solid #ca8a04;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.gem-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    border-color: #fbbf24;
+}
+
+.gem-btn:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+.gem-btn:disabled {
+    cursor: not-allowed;
+}
+
+.gem-btn.flash {
+    transform: scale(1.1);
+    filter: brightness(2);
+    box-shadow: 0 0 50px rgba(255,255,255,0.8);
+}
+
+.gem-btn.user-flash {
+    filter: brightness(1.5);
+    transform: scale(1.05);
+}
+
+.gem-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(255,255,255,0.2), transparent);
+    pointer-events: none;
+}
+
+.gem-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.2;
+    background-image: radial-gradient(circle, white 1px, transparent 1px);
+    background-size: 10px 10px;
+    pointer-events: none;
+}
+
+.gem-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Gem Colors */
+.ruby { background: linear-gradient(135deg, #dc2626, #991b1b); }
+.sapphire { background: linear-gradient(135deg, #2563eb, #1e40af); }
+.emerald { background: linear-gradient(135deg, #16a34a, #15803d); }
+.gold { background: linear-gradient(135deg, #eab308, #a16207); }
+.amethyst { background: linear-gradient(135deg, #9333ea, #6b21a8); }
+.topaz { background: linear-gradient(135deg, #f97316, #c2410c); }
+.pearl { background: linear-gradient(135deg, #e5e7eb, #9ca3af); }
+.turquoise { background: linear-gradient(135deg, #06b6d4, #0e7490); }
+.amber { background: linear-gradient(135deg, #d97706, #92400e); }
+
+.footer {
+    margin-top: 40px;
+    color: #fef08a;
+    font-size: 14px;
+    opacity: 0.7;
+    z-index: 10;
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 { font-size: 40px; }
+    h2 { font-size: 22px; }
+    .gem-btn { width: 90px; height: 90px; }
+    .game-board { gap: 15px; }
+    .gem-icon { font-size: 35px; }
+    .decoration { font-size: 40px; }
+}
+
+@media (max-width: 480px) {
+    h1 { font-size: 32px; }
+    .gem-btn { width: 70px; height: 70px; }
+    .game-board { gap: 10px; }
+    .gem-icon { font-size: 25px; }
+    .start-message { font-size: 16px; }
+    .level-number { font-size: 28px; }
+}
