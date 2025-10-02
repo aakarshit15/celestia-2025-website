@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./index2.css";
+import "./app.css";
 
 const InfoIcon = () => (
   <svg
@@ -222,7 +222,7 @@ export default function WordleArabian() {
         )}
       </div>
 
-      <button onClick={resetGame}>🔄 Reset Game</button>
+      <button onClick={resetGame}>PLAY AGAIN</button>
 
       <div id="keyboard">
         {rows.map((row, rowIdx) => (

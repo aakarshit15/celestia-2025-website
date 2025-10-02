@@ -17,7 +17,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   /* Use relative path for background - place image in public folder or assets */
-  background: url("../../assets/bgimage.png") no-repeat center center/cover;
+  background: url("../../../assets/bgimage.png") no-repeat center center/cover;
   /* Fallback gradient if image doesn't load */
   background-color: #1a0b2e;
   background-attachment: fixed;
