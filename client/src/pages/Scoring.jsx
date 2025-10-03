@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { Trophy, QrCode, Hash } from 'lucide-react'
 import AdminNavbar from '../components/AdminNavbar'
+import { getAllGames } from "../apis/games.api";
+import { assignPointsByQr, assignPointsByTeamCode, verifyQr } from "../apis/scoring.api";
+import { toast } from 'react-toastify';
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const Scoring = () => {
-  const [teams, setTeams] = useState([])
-  const [matchHistory, setMatchHistory] = useState([])
-  const [selectedGame, setSelectedGame] = useState('Game A')
-  const [inputMethod, setInputMethod] = useState('code')
-  const [winnerInput, setWinnerInput] = useState('')
-  const [loserInput, setLoserInput] = useState('')
+  const [teams, setTeams] = useState([]);
+  const [games, setGames] = useState([]);
+  const [matchHistory, setMatchHistory] = useState([]);
+  const [selectedGame, setSelectedGame] = useState();
+  const [inputMethod, setInputMethod] = useState('code');
+  const [winnerInput, setWinnerInput] = useState('');
+  const [loserInput, setLoserInput] = useState('');
 
   const gameScoring = {
     'Game A': { win: 10, lose: -2 },
@@ -17,77 +23,98 @@ const Scoring = () => {
     'Game D': { win: 25, lose: -3 }
   }
 
-  const games = Object.keys(gameScoring)
+  // const games = Object.keys(gameScoring)
+
+  const getGames = async () => {
+    try {
+      const response = await axios.get(getAllGames);
+      console.log("Games fetched: ", response.data);
+
+      // const gameNames = response.data.data.map(game => game.gameName);
+      const gameDetails = response.data.data;
+      console.log("Game details: ", gameDetails);
+      // console.log("Game names: ", gameNames);
+      setGames(gameDetails);
+
+      if (gameDetails && gameDetails.length > 0) {
+        setSelectedGame(gameDetails[0]._id);
+      }
+    }
+    catch (error) {
+      console.log("Error in fetching games", error);
+    }
+  }
 
   useEffect(() => {
-    // Fetch teams and matches from backend
-    // fetch('/api/teams').then(res => res.json()).then(data => setTeams(data))
-    // fetch('/api/matches').then(res => res.json()).then(data => setMatchHistory(data))
+    getGames();
   }, [])
 
   const handleScoreSubmit = async () => {
-    if (!winnerInput || !loserInput) {
-      alert('Please enter both teams')
-      return
-    }
-
-    const winner = teams.find(t =>
-      t.teamCode?.toLowerCase() === winnerInput.toLowerCase() ||
-      t.teamName?.toLowerCase() === winnerInput.toLowerCase()
-    )
-
-    const loser = teams.find(t =>
-      t.teamCode?.toLowerCase() === loserInput.toLowerCase() ||
-      t.teamName?.toLowerCase() === loserInput.toLowerCase()
-    )
-
-    if (!winner || !loser) {
-      alert('Invalid team code or name. Please check and try again.')
-      return
-    }
-
-    if (winner.id === loser.id) {
-      alert('Winner and loser cannot be the same team.')
-      return
-    }
-
-    const scoring = gameScoring[selectedGame]
-    const newMatch = {
-      game: selectedGame,
-      winnerId: winner.id,
-      loserId: loser.id,
-      winnerPoints: scoring.win,
-      loserPoints: scoring.lose
-    }
+    console.log("Scoring handleSubmit clicked");
 
     try {
-      // const response = await fetch('/api/matches', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(newMatch)
-      // })
-      // const data = await response.json()
 
-      const tempMatch = {
-        id: Date.now(),
-        ...newMatch,
-        winner: winner.teamName,
-        loser: loser.teamName,
-        timestamp: new Date().toLocaleString()
+      if (inputMethod === 'code') {
+        if (!winnerInput) {
+          alert('Please enter the winning team code')
+          return
+        }
+
+        const data = {
+          teamId: winnerInput,
+          gameId: selectedGame,
+        }
+
+        const token = Cookies.get('token');
+        const response = await axios.post(assignPointsByTeamCode, data, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        console.log("Points given: ", response.data);
+        toast.success("Score Recorded Successfully");
       }
-      setMatchHistory([...matchHistory, tempMatch])
-      alert(`Score recorded! ${winner.teamName}: +${scoring.win} pts, ${loser.teamName}: ${scoring.lose} pts`)
 
-      setWinnerInput('')
-      setLoserInput('')
     } catch (error) {
-      alert('Failed to record score')
+      console.log("Error in scoring", error);
+      switch (error.response.status) {
+        case 400:
+          toast.error("Invalid team code or game selection");
+          break;
+        case 401:
+          toast.error("Session expired. Please login again");
+          break;
+        case 403:
+          toast.error("You don't have permission to record scores");
+          break;
+        case 404:
+          toast.error("Team or Game Not Found");
+          break;
+        case 409:
+          toast.error("Score already recorded for this match");
+          break;
+        case 429:
+          toast.error("Too many attempts. Please try again later");
+          break;
+        case 500:
+          toast.error("Server error. Please try again later");
+          break;
+        default:
+          toast.error("Failed to record score");
+      }
     }
+  }
+
+  const handleQRScan = (e) => {
+    // TODO: Implement QR scanner functionality
+    // This would typically use a library like react-qr-reader or html5-qrcode
+    console.log('QR Scan initiated')
   }
 
   return (
     <>
-    <AdminNavbar />
+      <AdminNavbar />
       <div className="max-w-4xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <div className="bg-white rounded-lg shadow-lg p-4 sm:p-8">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
@@ -99,29 +126,29 @@ const Scoring = () => {
               <select
                 value={selectedGame}
                 onChange={(e) => setSelectedGame(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm sm:text-base"
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-[10px] sm:text-xs"
               >
                 {games.map((game) => (
-                  <option key={game} value={game}>
-                    {game}
+                  <option key={game._id} value={game._id}>
+                    {game.gameName}
                   </option>
                 ))}
               </select>
             </div>
           </div>
 
-          <div className="mb-4 sm:mb-6 bg-indigo-50 p-3 sm:p-4 rounded-lg">
+          {/* <div className="mb-4 sm:mb-6 bg-indigo-50 p-3 sm:p-4 rounded-lg">
             <p className="text-xs sm:text-sm text-indigo-900 font-medium">
               {selectedGame} Scoring: Winner gets +{gameScoring[selectedGame].win} pts, Loser gets {gameScoring[selectedGame].lose} pts
             </p>
-          </div>
+          </div> */}
 
           <div className="mb-4 sm:mb-6 flex gap-2 sm:gap-4 bg-gray-50 p-2 rounded-lg">
             <button
               onClick={() => setInputMethod('code')}
               className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 py-2 px-2 sm:px-4 rounded-md transition-colors text-xs sm:text-sm ${inputMethod === 'code'
-                  ? 'bg-white text-indigo-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
                 }`}
             >
               <Hash className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -131,8 +158,8 @@ const Scoring = () => {
             <button
               onClick={() => setInputMethod('qr')}
               className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 py-2 px-2 sm:px-4 rounded-md transition-colors text-xs sm:text-sm ${inputMethod === 'qr'
-                  ? 'bg-white text-indigo-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
                 }`}
             >
               <QrCode className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -142,33 +169,56 @@ const Scoring = () => {
           </div>
 
           <div className="space-y-4 sm:space-y-6">
-            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"> */}
-            <div className="border-2 border-green-200 rounded-lg p-4 sm:p-6 bg-green-50">
-              <label className="block text-xs sm:text-sm font-medium text-green-900 mb-2">
-                Winning Team {inputMethod === 'qr' ? '(Scan QR)' : '(Code/Name)'}
-              </label>
-              <input
-                type="text"
-                value={winnerInput}
-                onChange={(e) => setWinnerInput(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 border border-green-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
-                placeholder={inputMethod === 'qr' ? 'QR result' : 'Code or name'}
-              />
-            </div>
+            {inputMethod === 'code' ? (
+              // Team Code Input
+              <div className="border-2 border-green-200 rounded-lg p-4 sm:p-6 bg-green-50">
+                <label className="block text-xs sm:text-sm font-medium text-green-900 mb-2">
+                  Winning Team (Enter Team Code)
+                </label>
+                <input
+                  type="text"
+                  value={winnerInput}
+                  onChange={(e) => setWinnerInput(e.target.value)}
+                  className="w-full px-3 sm:px-4 py-2 border border-green-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm sm:text-base"
+                  placeholder="Enter team code or name"
+                />
+              </div>
+            ) : (
+              // QR Code Scanner
+              <div className="border-2 border-green-200 rounded-lg p-4 sm:p-6 bg-green-50">
+                <label className="block text-xs sm:text-sm font-medium text-green-900 mb-3">
+                  Winning Team (Scan QR Code)
+                </label>
 
-            {/* <div className="border-2 border-red-200 rounded-lg p-4 sm:p-6 bg-red-50">
-              <label className="block text-xs sm:text-sm font-medium text-red-900 mb-2">
-                Losing Team {inputMethod === 'qr' ? '(Scan QR)' : '(Code/Name)'}
-              </label>
-              <input
-                type="text"
-                value={loserInput}
-                onChange={(e) => setLoserInput(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 border border-red-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm sm:text-base"
-                placeholder={inputMethod === 'qr' ? 'QR result' : 'Code or name'}
-              />
-            </div> */}
-            {/* </div> */}
+                {/* QR Scanner Area */}
+                <div className="bg-white border-2 border-dashed border-green-300 rounded-lg p-6 sm:p-8 mb-3">
+                  <div className="flex flex-col items-center justify-center text-center">
+                    <QrCode className="h-16 w-16 sm:h-20 sm:w-20 text-green-400 mb-3" />
+                    <p className="text-sm sm:text-base text-gray-600 mb-4">
+                      Position QR code within the frame
+                    </p>
+                    <button
+                      onClick={handleQRScan}
+                      className="bg-green-600 text-white px-4 sm:px-6 py-2 rounded-md hover:bg-green-700 transition-colors text-sm sm:text-base"
+                    >
+                      Start Scanning
+                    </button>
+                  </div>
+                  {/* TODO: Add QR scanner library component here */}
+                  {/* Example: <QrReader onScan={handleScan} onError={handleError} /> */}
+                </div>
+
+                {/* Display scanned result */}
+                {winnerInput && (
+                  <div className="bg-green-100 border border-green-300 rounded-md p-3">
+                    <p className="text-xs sm:text-sm text-green-900">
+                      <span className="font-medium">Scanned: </span>
+                      {winnerInput}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
 
             <button
               onClick={handleScoreSubmit}
@@ -178,7 +228,7 @@ const Scoring = () => {
             </button>
           </div>
 
-          {matchHistory.length > 0 && (
+          {/* {matchHistory.length > 0 && (
             <div className="mt-6 sm:mt-8">
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Recent Matches</h3>
               <div className="space-y-3">
@@ -201,7 +251,7 @@ const Scoring = () => {
                 ))}
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </>

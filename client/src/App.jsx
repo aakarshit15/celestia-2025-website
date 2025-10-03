@@ -8,6 +8,8 @@ import {
   Cloud,
 } from "@react-three/drei";
 import { Routes, Route, Link } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -123,31 +125,47 @@ function Home() {
 // Main App with all routes merged
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/leaderboard" element={<Leaderboard />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/games/simon_says" element={<Simon_says />} />
-      
-      <Route path="/admin/login" element={<AdminLogin />} />
-      <Route
-        path="/admin/register"
-        element={
-          <ProtectedRoute
-            element={Register}
-            allowedRoles={["admin"]}
-          />
-        }
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
       />
-      <Route
-        path="/admin/scoring"
-        element={
-          <ProtectedRoute
-            element={Scoring}
-            allowedRoles={["admin"]}
-          />
-        }
-      />
-    </Routes>
+      <Routes>
+
+        <Route path="/" element={<Home />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/games/simon_says" element={<Simon_says />} />
+
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin/register"
+          element={
+            <ProtectedRoute
+              element={Register}
+              allowedRoles={["admin"]}
+            />
+          }
+        />
+        <Route
+          path="/admin/scoring"
+          element={
+            <ProtectedRoute
+              element={Scoring}
+              allowedRoles={["admin"]}
+            />
+          }
+        />
+      </Routes>
+    </>
+
   );
 }

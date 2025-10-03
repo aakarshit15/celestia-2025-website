@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Users } from 'lucide-react'
 import AdminNavbar from '../components/AdminNavbar'
+import { teamRegister } from "../apis/user.api";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { toast } from 'react-toastify';
+
 
 const Register = () => {
   const [teams, setTeams] = useState([])
@@ -8,14 +13,9 @@ const Register = () => {
   const [leaderName, setLeaderName] = useState('')
   const [leaderEmail, setLeaderEmail] = useState('')
 
-  useEffect(() => {
-    // Fetch teams from backend
-    // fetch('/api/teams')
-    //   .then(res => res.json())
-    //   .then(data => setTeams(data))
-  }, [])
-
   const handleRegister = async () => {
+    console.log("In handle register");
+
     if (!teamName || !leaderName || !leaderEmail) {
       alert('Please fill in all fields')
       return
@@ -28,32 +28,68 @@ const Register = () => {
     }
 
     try {
-      // const response = await fetch('/api/teams', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(newTeam)
-      // })
-      // const data = await response.json()
+      const token = Cookies.get('token');
+      const response = await axios.post(teamRegister, newTeam, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = response.data;
+      console.log("Team registered: ", data);
+      toast.success(`Team registered successfully!`);
 
-      const tempTeam = {
-        id: Date.now(),
-        ...newTeam,
-        teamCode: `TEAM${(teams.length + 1).toString().padStart(3, '0')}`
-      }
-      setTeams([...teams, tempTeam])
-      alert(`Team registered successfully! Team Code: ${tempTeam.teamCode}`)
+      // const tempTeam = {
+      //   id: Date.now(),
+      //   ...newTeam,
+      //   teamCode: `TEAM${(teams.length + 1).toString().padStart(3, '0')}`
+      // }
+      // setTeams([...teams, tempTeam])
+      // alert(`Team registered successfully! Team Code: ${tempTeam.teamCode}`)
 
-      setTeamName('')
-      setLeaderName('')
-      setLeaderEmail('')
+      // setTeamName('')
+      // setLeaderName('')
+      // setLeaderEmail('')
+
     } catch (error) {
-      alert('Failed to register team')
+
+      console.log("Error in team register", error);
+
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            toast.error('Invalid request. Please check your input.');
+            break;
+          case 401:
+            toast.error('Unauthorized. Please login again.');
+            break;
+          case 403:
+            toast.error('Forbidden. You do not have permission to register teams.');
+            break;
+          case 409:
+            toast.error('Team or email already exists.');
+            break;
+          case 429:
+            toast.error('Too many requests. Please try again later.');
+            break;
+          case 500:
+            toast.error('Server error. Please try again later.');
+            break;
+          default:
+            toast.error('An error occurred while registering the team.');
+        }
+      }
+      else if (error.request) {
+        alert('No response from server. Please check your internet connection.');
+      } else {
+        alert('Error setting up the request. Please try again.');
+      }
     }
   }
 
   return (
     <>
-    <AdminNavbar />
+      <AdminNavbar />
       <div className="max-w-2xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <div className="bg-white rounded-lg shadow-lg p-4 sm:p-8">
           <div className="flex items-center gap-3 mb-4 sm:mb-6">
