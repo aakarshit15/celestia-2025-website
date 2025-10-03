@@ -1,10 +1,14 @@
 import express from "express";
 import { participantController } from "../controllers/index.js";
+import { authenticateAdmin, logActivity } from "../middleware/auth.js";
 
 const router = express.Router();
 
 // Registration route
-router.post("/register", participantController.registerParticipant);
+router.post("/register", 
+  authenticateAdmin,
+  participantController.registerParticipant
+);
 
 // Get participant by team ID
 router.get("/:teamId", participantController.getParticipantByTeamId);

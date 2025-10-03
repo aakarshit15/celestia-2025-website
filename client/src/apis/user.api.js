@@ -1,0 +1,4 @@
+import SERVER_API from "./server.api.js";
+
+export const adminLogin = `${SERVER_API}/admin/login`;
+export const teamRegister = `${SERVER_API}/participants/register`;
