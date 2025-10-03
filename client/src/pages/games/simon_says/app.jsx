@@ -1,6 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
-// import "./app.css";
-// import bgImg from "../../../../src/assets";
+import React, { useState, useEffect } from "react";
+import "./arya.css";
+import img1 from "../../../../src/assets/simon_says/arabianSym1.png";
+import img2 from "../../../../src/assets/simon_says/arabianSym2.png";
+import img3 from "../../../../src/assets/simon_says/arabianSym3.png";
+import img4 from "../../../../src/assets/simon_says/arabianSym4.png";
+import img5 from "../../../../src/assets/simon_says/arabianSym5.png";
+import img6 from "../../../../src/assets/simon_says/arabianSym6.png";
+import img7 from "../../../../src/assets/simon_says/arabianSym7.png";
+import img8 from "../../../../src/assets/simon_says/arabianSym8.png";
+import img9 from "../../../../src/assets/simon_says/arabianSym9.png";
 
 const ArabianSimonGame = () => {
   const [gameSeq, setGameSeq] = useState([]);
@@ -226,23 +234,34 @@ const ArabianSimonGame = () => {
     startGame();
   };
 
+  const arabianSym = [img1, img2, img3, img4, img5, img6, img7, img8, img9];
+
   return (
-    <div className={`game-container flex flex-col justify-center items-center bg-[url(../../../src/assets/simon_says/background4.jpg)] bg-no-repeat bg-cover w-full min-h-[100vh]`}>
+    <div
+      className={`game-container flex flex-col justify-center items-center bg-[url(../../../src/assets/simon_says/background4.jpg)] bg-no-repeat bg-cover w-full min-h-[100vh]`}
+    >
       {/* <div className="stars" id="stars-container"></div> */}
 
       {/* <div className="decoration top-left">🕌</div>
       <div className="decoration bottom-right">✨</div> */}
 
       <div className="header flex flex-col justify-center items-center gap-8">
-        <h1 className="text-5xl font-bold font-cinzel text-[#decd0c] text-center">Arabian Nights</h1>
-        <h2 className="text-4xl font-bold font-cinzel justify-self-center text-[#decd0c]">Simon Says</h2>
+        <h1 className="text-5xl font-bold font-cinzel text-[#decd0c] text-center">
+          Arabian Nights
+        </h1>
+        <h2 className="text-4xl font-bold font-cinzel justify-self-center text-[#decd0c]">
+          Simon Says
+        </h2>
 
         {!started && !gameOver && (
           <div className="start-message flex flex-col justify-center items-center gap-5">
             <div className="text-2xl font-cinzel text-[#decd0c] font-semibold w-[50%] text-center">
               Press any key or click below to begin your magical journey
             </div>
-            <button className="start-btn text-center text-2xl font-cinzel text-[#585806] font-semibold cursor-pointer" onClick={handleStartClick}>
+            <button
+              className="start-btn text-center text-2xl font-cinzel text-[#585806]  cursor-pointer"
+              onClick={handleStartClick}
+            >
               Start Game
             </button>
           </div>
@@ -268,23 +287,28 @@ const ArabianSimonGame = () => {
             </button>
           </div>
         )}
-      </div>
-
-      <div className="game-board grid grid-cols-3 gap-4">
-        {colors.map((color) => (
-          <button
-            key={color}
-            onClick={() => handleButtonClick(color)}
-            disabled={!started || isFlashing}
-            className={`gem-btn ${color} ${
-              isFlashing === color ? "flash" : ""
-            } ${isUserFlashing === color ? "user-flash" : ""} p-5 bg-amber-700 rounded-xl `}
-          >
-            <div className="gem-overlay"></div>
-            <div className="gem-pattern"></div>
-            <div className="gem-icon">💎</div>
-          </button>
-        ))}
+        {started && !gameOver && (
+          <div className="gems-row flex flex-wrap justify-center items-center gap-4 mt-8">
+            {arabianSym.map((symbol, index) => (
+              <button
+                key={index}
+                onClick={() => handleButtonClick(colors[index])}
+                disabled={!started || isFlashing}
+                className={`gem-btn ${colors[index]} ${
+                  isFlashing === colors[index] ? "flash" : ""
+                } ${
+                  isUserFlashing === colors[index] ? "user-flash" : ""
+                } p-5 bg-amber-700 rounded-xl `}
+              >
+                <div className="gem-overlay"></div>
+                <div className="gem-pattern"></div>
+                <div className="gem-icon">
+                  <img src={symbol} alt={` Gem ${colors[index]}`} id="symbols" />
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* <div className="footer">

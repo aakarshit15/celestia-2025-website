@@ -1,0 +1,83 @@
+.start-btn {
+  background: linear-gradient(145deg, #f0e68c, #d4af37);
+  box-shadow: 5px 5px 10px #b5a22e, -5px -5px 10px #ffffa0;
+  border-radius: 15px;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+}
+
+.start-btn:hover {
+  background: linear-gradient(145deg, #d4af37, #f0e68c);
+  box-shadow: 2px 2px 5px #b5a22e, -2px -2px 5px #ffffa0;
+  transform: translateY(-2px);
+}
+
+.game-board {
+  margin-top: 20px;
+}
+
+.game-over-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.game-over-score {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.restart-btn {
+  background: linear-gradient(145deg, #f0e68c, #d4af37);
+  box-shadow: 5px 5px 10px #b5a22e, -5px -5px 10px #ffffa0;
+  border-radius: 15px;
+  padding: 10px 20px;
+}
+
+.game-over-box {
+  background: #fffacd;
+  border: 2px solid #f0e68c;
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.level-display {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+.level-number {
+  font-weight: bold;
+  color: #ffef00;
+  font: bolder;
+}
+.level-subtitle {
+  font-size: 1rem;
+  color: #ffef00;
+  font-weight: 900;
+  font: bolder;
+}
+
+.gems-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+#symbols {
+  max-width: 600px;
+  margin: 0 auto;
+  justify-items: center;
+  /* border-radius: '10px'; */
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+#symbols:hover {
+  transform: scale(1.1);
+}
