@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./app.css";
 
 const ArabianSimonGame = () => {
@@ -9,6 +9,24 @@ const ArabianSimonGame = () => {
   const [isFlashing, setIsFlashing] = useState(null);
   const [isUserFlashing, setIsUserFlashing] = useState(null);
   const [gameOver, setGameOver] = useState(false);
+
+  // Create a persistent AudioContext to reduce lag
+  const audioContextRef = React.useRef(null);
+
+  // Initialize AudioContext once
+  const getAudioContext = () => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext ||
+        window.webkitAudioContext)();
+    }
+
+    // Resume if suspended
+    if (audioContextRef.current.state === "suspended") {
+      audioContextRef.current.resume();
+    }
+
+    return audioContextRef.current;
+  };
 
   const colors = [
     "ruby",
@@ -21,6 +39,77 @@ const ArabianSimonGame = () => {
     "turquoise",
     "amber",
   ];
+
+  // Sound configurations for each gem (frequency and waveform type)
+  const soundMap = {
+    ruby: { freq: 261.63, type: "sine" }, // C4 - Pure tone
+    sapphire: { freq: 293.66, type: "square" }, // D4 - Hollow
+    emerald: { freq: 329.63, type: "sine" }, // E4 - Pure tone
+    gold: { freq: 349.23, type: "triangle" }, // F4 - Mellow
+    amethyst: { freq: 392.0, type: "sine" }, // G4 - Pure tone
+    topaz: { freq: 440.0, type: "sawtooth" }, // A4 - Bright
+    pearl: { freq: 493.88, type: "sine" }, // B4 - Pure tone
+    turquoise: { freq: 523.25, type: "triangle" }, // C5 - Mellow
+    amber: { freq: 587.33, type: "square" }, // D5 - Hollow
+  };
+
+  // Function to play sound for correct button
+  const playSound = (color) => {
+    try {
+      const audioContext = getAudioContext();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      oscillator.frequency.value = soundMap[color].freq;
+      oscillator.type = soundMap[color].type;
+
+      // Synchronized timing - match visual flash duration (250ms)
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.01,
+        audioContext.currentTime + 0.25
+      );
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.25);
+    } catch (error) {
+      console.warn("Audio not supported or blocked:", error);
+    }
+  };
+
+  // Function to play error sound
+  const playErrorSound = () => {
+    try {
+      const audioContext = getAudioContext();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      // Descending dissonant tone for error
+      oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(
+        100,
+        audioContext.currentTime + 0.5
+      );
+      oscillator.type = "sawtooth";
+
+      gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.01,
+        audioContext.currentTime + 0.5
+      );
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (error) {
+      console.warn("Audio not supported or blocked:", error);
+    }
+  };
 
   // Create stars on mount
   useEffect(() => {
@@ -87,6 +176,8 @@ const ArabianSimonGame = () => {
     sequence.forEach((color, idx) => {
       setTimeout(() => {
         setIsFlashing(color);
+        // Play sound when showing the sequence
+        playSound(color);
         setTimeout(() => setIsFlashing(null), 250);
       }, idx * 350);
     });
@@ -106,6 +197,9 @@ const ArabianSimonGame = () => {
     setGameOver(true);
     setStarted(false);
 
+    // Play error sound
+    playErrorSound();
+
     // Flash red background
     document.body.classList.add("game-over-flash");
     setTimeout(() => {
@@ -115,6 +209,9 @@ const ArabianSimonGame = () => {
 
   const handleButtonClick = (color) => {
     if (!started || isFlashing) return;
+
+    // Play sound when user clicks a button
+    playSound(color);
 
     setIsUserFlashing(color);
     setTimeout(() => setIsUserFlashing(null), 250);
