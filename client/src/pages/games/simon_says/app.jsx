@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./app.css";
+// import "./app.css";
+// import bgImg from "../../../../src/assets";
 
 const ArabianSimonGame = () => {
   const [gameSeq, setGameSeq] = useState([]);
@@ -112,22 +113,22 @@ const ArabianSimonGame = () => {
   };
 
   // Create stars on mount
-  useEffect(() => {
-    const starsContainer = document.getElementById("stars-container");
-    if (starsContainer) {
-      for (let i = 0; i < 50; i++) {
-        const star = document.createElement("div");
-        star.className = "star";
-        star.style.width = Math.random() * 3 + 1 + "px";
-        star.style.height = star.style.width;
-        star.style.top = Math.random() * 100 + "%";
-        star.style.left = Math.random() * 100 + "%";
-        star.style.animationDelay = Math.random() * 3 + "s";
-        star.style.animationDuration = Math.random() * 2 + 2 + "s";
-        starsContainer.appendChild(star);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   const starsContainer = document.getElementById("stars-container");
+  //   if (starsContainer) {
+  //     for (let i = 0; i < 50; i++) {
+  //       const star = document.createElement("div");
+  //       star.className = "star";
+  //       star.style.width = Math.random() * 3 + 1 + "px";
+  //       star.style.height = star.style.width;
+  //       star.style.top = Math.random() * 100 + "%";
+  //       star.style.left = Math.random() * 100 + "%";
+  //       star.style.animationDelay = Math.random() * 3 + "s";
+  //       star.style.animationDuration = Math.random() * 2 + 2 + "s";
+  //       starsContainer.appendChild(star);
+  //     }
+  //   }
+  // }, []);
 
   // Handle keypress to start game
   useEffect(() => {
@@ -226,23 +227,23 @@ const ArabianSimonGame = () => {
   };
 
   return (
-    <div className="game-container">
-      <div className="stars" id="stars-container"></div>
+    <div className={`game-container flex flex-col justify-center items-center bg-[url(../../../src/assets/simon_says/background4.jpg)] bg-no-repeat bg-cover w-full min-h-[100vh]`}>
+      {/* <div className="stars" id="stars-container"></div> */}
 
-      <div className="decoration top-left">🕌</div>
-      <div className="decoration bottom-right">✨</div>
+      {/* <div className="decoration top-left">🕌</div>
+      <div className="decoration bottom-right">✨</div> */}
 
-      <div className="header">
-        <h1>🌙 Arabian Nights 🌙</h1>
-        <h2>Simon Says</h2>
+      <div className="header flex flex-col justify-center items-center gap-8">
+        <h1 className="text-5xl font-bold font-cinzel text-[#decd0c] text-center">Arabian Nights</h1>
+        <h2 className="text-4xl font-bold font-cinzel justify-self-center text-[#decd0c]">Simon Says</h2>
 
         {!started && !gameOver && (
-          <div className="start-message">
-            <div>
-              ✨ Press any key or click below to begin your magical journey ✨
+          <div className="start-message flex flex-col justify-center items-center gap-5">
+            <div className="text-2xl font-cinzel text-[#decd0c] font-semibold w-[50%] text-center">
+              Press any key or click below to begin your magical journey
             </div>
-            <button className="start-btn" onClick={handleStartClick}>
-              🚀 Start Game
+            <button className="start-btn text-center text-2xl font-cinzel text-[#585806] font-semibold cursor-pointer" onClick={handleStartClick}>
+              Start Game
             </button>
           </div>
         )}
@@ -269,7 +270,7 @@ const ArabianSimonGame = () => {
         )}
       </div>
 
-      <div className="game-board">
+      <div className="game-board grid grid-cols-3 gap-4">
         {colors.map((color) => (
           <button
             key={color}
@@ -277,7 +278,7 @@ const ArabianSimonGame = () => {
             disabled={!started || isFlashing}
             className={`gem-btn ${color} ${
               isFlashing === color ? "flash" : ""
-            } ${isUserFlashing === color ? "user-flash" : ""}`}
+            } ${isUserFlashing === color ? "user-flash" : ""} p-5 bg-amber-700 rounded-xl `}
           >
             <div className="gem-overlay"></div>
             <div className="gem-pattern"></div>
@@ -286,9 +287,9 @@ const ArabianSimonGame = () => {
         ))}
       </div>
 
-      <div className="footer">
+      {/* <div className="footer">
         <p>🌟 May the magic of Arabian Nights guide your memory 🌟</p>
-      </div>
+      </div> */}
     </div>
   );
 };
