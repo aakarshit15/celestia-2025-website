@@ -8,12 +8,20 @@ import {
   Cloud,
 } from "@react-three/drei";
 import { Routes, Route, Link } from "react-router-dom";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+
 import Leaderboard from "./pages/leaderboard";
 import Login from "./pages/Login";
 import Button from "./pages/Button";
-import Simon_says from "./pages/games/simon_says/app.jsx";
 import "./index.css";
 import "./App.css";
+
+import Simon_says from "./pages/games/simon_says/app.jsx";
+
+import Scoring from "./pages/Scoring.jsx";
+import Register from "./pages/register.jsx";
+import AdminLogin from "./pages/AdminLogin.jsx";
 
 // 3D Model Component
 function Model() {
@@ -120,6 +128,26 @@ export default function App() {
       <Route path="/leaderboard" element={<Leaderboard />} />
       <Route path="/login" element={<Login />} />
       <Route path="/games/simon_says" element={<Simon_says />} />
+      
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route
+        path="/admin/register"
+        element={
+          <ProtectedRoute
+            element={Register}
+            allowedRoles={["admin"]}
+          />
+        }
+      />
+      <Route
+        path="/admin/scoring"
+        element={
+          <ProtectedRoute
+            element={Scoring}
+            allowedRoles={["admin"]}
+          />
+        }
+      />
     </Routes>
   );
 }
