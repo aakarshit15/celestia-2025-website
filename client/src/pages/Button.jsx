@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import genie from "../assets/genie.png";
 
-const Button = ({ textBefore, textAfter, to }) => {
+const Button = ({ textBefore, textAfter, to, fullSlide }) => {
   return (
-    <StyledWrapper>
+    <StyledWrapper $fullSlide={fullSlide}>
       <Link to={to}>
         <button>
           <img src={genie} alt="genie" className="genie" />
@@ -35,7 +35,7 @@ const StyledWrapper = styled.div`
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    background-color: #fdd835; /* golden */
+    background-color: #d4af37;
     transition: all 0.5s ease;
   }
 
@@ -74,19 +74,20 @@ const StyledWrapper = styled.div`
   }
 
   button:hover img.genie {
-    transform: translateX(180px); /* slides towards right but leaves small gap */
+    /* Use 170px for the leaderboard button (fullSlide=true) 
+       and 140px for all others. This keeps the genie visible at the edge. */
+    transform: translateX(${(props) => (props.$fullSlide ? '170px' : '140px')});
   }
 
   button:hover .text-before {
     transform: translateX(-150%);
-    opacity: 0; /* hide completely */
+    opacity: 0;
   }
 
   button:hover .text-after {
     transform: translateX(-50%);
-    opacity: 1; /* show fully */
+    opacity: 1;
   }
 `;
 
 export default Button;
-

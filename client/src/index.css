@@ -4,6 +4,10 @@
 body, input, button, h1, h2, h3, h4, h5, h6, p, a, span, div {
   font-family: 'Cinzel Decorative', cursive;
 }
+/* This class ensures the element is invisible until React/Framer Motion takes over. */
+.initial-hidden {
+  opacity: 0;
+}
 
 /* Existing classes below remain the same */
 .loader {
