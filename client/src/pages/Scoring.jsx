@@ -6,6 +6,7 @@ import { assignPointsByQr, assignPointsByTeamCode, verifyQr } from "../apis/scor
 import { toast } from 'react-toastify';
 import axios from "axios";
 import Cookies from "js-cookie";
+import { QrReader } from 'react-qr-reader';
 
 const Scoring = () => {
   const [teams, setTeams] = useState([]);
@@ -15,6 +16,7 @@ const Scoring = () => {
   const [inputMethod, setInputMethod] = useState('code');
   const [winnerInput, setWinnerInput] = useState('');
   const [loserInput, setLoserInput] = useState('');
+  const [qrResult, setQrResult] = useState(null);
 
   const gameScoring = {
     'Game A': { win: 10, lose: -2 },
@@ -22,8 +24,6 @@ const Scoring = () => {
     'Game C': { win: 20, lose: -5 },
     'Game D': { win: 25, lose: -3 }
   }
-
-  // const games = Object.keys(gameScoring)
 
   const getGames = async () => {
     try {
@@ -106,11 +106,39 @@ const Scoring = () => {
     }
   }
 
-  const handleQRScan = (e) => {
-    // TODO: Implement QR scanner functionality
-    // This would typically use a library like react-qr-reader or html5-qrcode
-    console.log('QR Scan initiated')
+  // Update the handleQRScan function
+  const handleQRScan = (scanData) => {
+    try {
+      if (scanData) {
+        // Parse the QR code data
+        const parsedData = JSON.parse(scanData);
+
+        if (parsedData.teamId) {
+          // Set the winner input with the teamId from QR
+          setWinnerInput(parsedData.teamId);
+          setQrResult(parsedData.teamId);
+          toast.success("QR Code scanned successfully!");
+        } else {
+          toast.error("Invalid QR code format");
+        }
+      }
+    } catch (error) {
+      console.error("QR Scan error:", error);
+      toast.error("Failed to process QR code");
+    }
   }
+
+  // Add error handler for QR scanner
+  const handleQRError = (error) => {
+    console.error("QR Scanner error:", error);
+    toast.error("Error accessing camera");
+  }
+
+  // const handleQRScan = (e) => {
+  //   // TODO: Implement QR scanner functionality
+  //   // This would typically use a library like react-qr-reader or html5-qrcode
+  //   console.log('QR Scan initiated')
+  // }
 
   return (
     <>
@@ -191,7 +219,7 @@ const Scoring = () => {
                 </label>
 
                 {/* QR Scanner Area */}
-                <div className="bg-white border-2 border-dashed border-green-300 rounded-lg p-6 sm:p-8 mb-3">
+                {/* <div className="bg-white border-2 border-dashed border-green-300 rounded-lg p-6 sm:p-8 mb-3">
                   <div className="flex flex-col items-center justify-center text-center">
                     <QrCode className="h-16 w-16 sm:h-20 sm:w-20 text-green-400 mb-3" />
                     <p className="text-sm sm:text-base text-gray-600 mb-4">
@@ -204,9 +232,38 @@ const Scoring = () => {
                       Start Scanning
                     </button>
                   </div>
-                  {/* TODO: Add QR scanner library component here */}
-                  {/* Example: <QrReader onScan={handleScan} onError={handleError} /> */}
+                  TODO: Add QR scanner library component here
+                  Example: <QrReader onScan={handleScan} onError={handleError} />
+                </div> */}
+                <div className="bg-white border-2 border-dashed border-green-300 rounded-lg p-6 sm:p-8 mb-3">
+                  <div className="flex flex-col items-center justify-center text-center">
+                    {/* Add your QR scanner component here */}
+                    <QrReader
+                      onResult={(result, error) => {
+                        if (result) {
+                          handleQRScan(result?.text);
+                        }
+                        if (error) {
+                          handleQRError(error);
+                        }
+                      }}
+                      constraints={{ facingMode: 'environment' }}
+                      className="w-full max-w-sm mx-auto"
+                    />
+                    <p className="text-sm sm:text-base text-gray-600 mt-4">
+                      Position QR code within the frame
+                    </p>
+                  </div>
                 </div>
+
+                {qrResult && (
+                  <div className="bg-green-100 border border-green-300 rounded-md p-3">
+                    <p className="text-xs sm:text-sm text-green-900">
+                      <span className="font-medium">Team ID: </span>
+                      {qrResult}
+                    </p>
+                  </div>
+                )}
 
                 {/* Display scanned result */}
                 {winnerInput && (

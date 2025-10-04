@@ -151,7 +151,7 @@ export default function App() {
           element={
             <ProtectedRoute
               element={Register}
-              allowedRoles={["admin"]}
+              allowedRoles={["admin", "superadmin"]}
             />
           }
         />
@@ -160,7 +160,7 @@ export default function App() {
           element={
             <ProtectedRoute
               element={Scoring}
-              allowedRoles={["admin"]}
+              allowedRoles={["admin", "superadmin"]}
             />
           }
         />
