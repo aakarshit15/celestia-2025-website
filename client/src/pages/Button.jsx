@@ -5,6 +5,7 @@ import genie from "../assets/genie.png";
 
 const Button = ({ textBefore, textAfter, to, fullSlide }) => {
   return (
+    // Passing the fullSlide prop for dynamic hover adjustment
     <StyledWrapper $fullSlide={fullSlide}>
       <Link to={to}>
         <button>
@@ -16,6 +17,19 @@ const Button = ({ textBefore, textAfter, to, fullSlide }) => {
     </StyledWrapper>
   );
 };
+
+// Define responsive sizes for the genie slide
+// Use a function to calculate the slide distance based on screen size
+const getGenieSlideDistance = (props) => {
+    // Default/Large screens: Use a larger slide distance
+    const baseDistance = props.$fullSlide ? 170 : 140; 
+    
+    // Mobile screens: Use a smaller slide distance
+    return `@media (max-width: 640px) {
+        transform: translateX(${props.$fullSlide ? '120px' : '90px'});
+    }`;
+};
+
 
 const StyledWrapper = styled.div`
   button {
@@ -37,6 +51,14 @@ const StyledWrapper = styled.div`
     overflow: hidden;
     background-color: #d4af37;
     transition: all 0.5s ease;
+
+    /* --- MOBILE STYLES (Default/Up to 640px) --- */
+    @media (max-width: 640px) {
+      padding: 12px 30px;
+      min-width: 180px; /* Smaller min-width for mobile */
+      font-size: 16px;
+      gap: 8px;
+    }
   }
 
   button:active {
@@ -50,6 +72,13 @@ const StyledWrapper = styled.div`
     position: relative;
     z-index: 2;
     transition: all 0.7s ease;
+
+    /* Mobile genie size adjustment */
+    @media (max-width: 640px) {
+      width: 30px;
+      height: 30px;
+      margin-right: 5px;
+    }
   }
 
   button .text-before,
@@ -73,10 +102,14 @@ const StyledWrapper = styled.div`
     opacity: 0;
   }
 
+  /* --- HOVER EFFECTS (Genie Slide Adjustment) --- */
+
   button:hover img.genie {
-    /* Use 170px for the leaderboard button (fullSlide=true) 
-       and 140px for all others. This keeps the genie visible at the edge. */
+    /* DEFAULT/DESKTOP SLIDE DISTANCE */
     transform: translateX(${(props) => (props.$fullSlide ? '170px' : '140px')});
+    
+    /* MOBILE SLIDE ADJUSTMENT */
+    ${getGenieSlideDistance}
   }
 
   button:hover .text-before {

@@ -1,9 +1,10 @@
 import React from "react";
 import Button from "./Button";
 import ltext from "../assets/ltext.png"; // top image
-import genie from "../assets/genie.png"; // <-- Import Genie image
+import genie from "../assets/genie.png"; // <-- Genie Image
 import { motion } from "framer-motion"; // <-- Import motion for animations
 
+// --- DUMMY LEADERBOARD DATA (20 Entries) ---
 const dummyLeaderboardData = [
   { rank: 1, teamName: "Power Puff Girls", members: 4, pointsBet: 200, score: 1240 },
   { rank: 2, teamName: "Only Comps", members: 3, pointsBet: 9, score: 1095 },
@@ -26,11 +27,12 @@ const dummyLeaderboardData = [
   { rank: 19, teamName: "Logic Legends", members: 3, pointsBet: 0, score: 540 },
   { rank: 20, teamName: "Query Quenchers", members: 5, pointsBet: 50, score: 500 },
 ];
+// --------------------------------------------------------------------------
 
-// Define common transition properties for synchronized header elements
+// Animation constants
 const HEADER_DURATION = 0.8;
 const HEADER_EASING = "easeOut";
-const TABLE_DELAY = HEADER_DURATION + 0.2; // Table starts after headers finish
+const TABLE_DELAY = HEADER_DURATION + 0.2;
 
 const Leaderboard = () => {
   
@@ -40,7 +42,7 @@ const Leaderboard = () => {
     animate: { opacity: 1, y: 0 },
     transition: {
       delay: TABLE_DELAY,
-      duration: 0.7, // Duration for the table drop-in
+      duration: 0.7,
       ease: "easeOut",
     },
   };
@@ -62,12 +64,13 @@ const Leaderboard = () => {
 
   return (
     <div
-      className="h-screen w-screen flex flex-col items-center justify-start bg-cover bg-center relative overflow-y-auto"
+      // CRITICAL: Now using flex-col and overflow-x-hidden for vertical stacking safety
+      className="min-h-screen w-full inset-x-0 flex flex-col items-center bg-cover bg-center relative overflow-x-hidden"
       style={{ backgroundImage: `url('/bg2.jpg')` }}
     >
-      {/* Back button - SYNCHRONIZED START */}
+      {/* Back button CONTAINER - Positioned absolutely to avoid affecting the main flow */}
       <motion.div 
-        className="absolute top-4 right-4 z-20"
+        className="absolute top-6 right-4 z-20"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ 
@@ -79,11 +82,12 @@ const Leaderboard = () => {
         <Button textBefore="Back" textAfter="Back" to="/" />
       </motion.div>
 
-      {/* Top banner - SYNCHRONIZED START */}
+      {/* Top banner - Ensures ample space above and below */}
       <motion.img
         src={ltext}
         alt="Top Banner"
-        className="w-2/3 sm:w-1/2 md:w-2/5 lg:w-1/3 mx-auto mt-2 mb-8 z-10"
+        // Increased top margin for clearance
+        className="w-4/5 sm:w-1/2 md:w-2/5 lg:w-1/3 mx-auto mt-20 sm:mt-8 z-10"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ 
@@ -92,59 +96,64 @@ const Leaderboard = () => {
             ease: HEADER_EASING 
         }}
       />
+      
+      {/* Dynamic SPACER to push the table down on small screens */}
+      {/* This ensures the Banner and Table never touch */}
+      <div className="h-10 sm:h-8"></div>
 
-      {/* Table Container - APPLYING DROP DOWN ANIMATION HERE */}
+
+      {/* Table Container - Now sits lower in the flex flow */}
       <motion.div 
-        className="w-11/12 max-w-7xl rounded-xl p-6 mb-10 bg-white/10 backdrop-blur-md border-4 border-[#d4af37] shadow-[0_0_20px_#d4af37] relative z-10"
+        className="w-11/12 max-w-4xl lg:max-w-7xl rounded-xl p-4 sm:p-6 mb-10 bg-white/10 backdrop-blur-md border-4 border-[#d4af37] shadow-[0_0_20px_#d4af37] relative z-10"
         {...tableDropInProps}
       >
         
-        {/* Genie Image - Absolute positioning relative to table container */}
+        {/* Genie Image - Small and positioned safely on mobile */}
         <motion.img
           src={genie}
           alt="Genie"
-          className="absolute -top-20 -left-10 w-40 h-auto z-0" 
+          className="absolute -top-6 sm:-top-14 w-12 sm:w-28 md:w-40 -left-3 sm:-left-6 md:-left-10 h-auto z-0" 
           variants={genieVariants}
           initial="hidden"
           animate="visible"
         />
 
         <div className="overflow-x-auto">
+          {/* Table content scrolls horizontally on mobile via overflow-x-auto */}
           <table className="min-w-full text-left font-light border-collapse">
-            <thead className="font-semibold text-[#f8e58c] uppercase border-b-2 border-[#d4af37] text-lg tracking-wide">
+            <thead className="font-semibold text-[#f8e58c] uppercase border-b-2 border-[#d4af37] text-sm sm:text-lg tracking-wide">
               <tr className="bg-[#2b1a00]/70">
-                <th className="px-6 py-3 border-r border-[#d4af37] rounded-tl-lg">Rank</th>
-                <th className="px-6 py-3 border-r border-[#d4af37]">Team Name</th>
-                <th className="px-6 py-3 border-r border-[#d4af37]">Members</th>
-                <th className="px-6 py-3 border-r border-[#d4af37]">Points Bet</th>
-                <th className="px-6 py-3 rounded-tr-lg">Score</th>
+                <th className="px-3 py-3 border-r border-[#d4af37] rounded-tl-lg">Rank</th>
+                <th className="px-3 py-3 border-r border-[#d4af37]">Team Name</th>
+                <th className="px-3 py-3 border-r border-[#d4af37]">Members</th>
+                <th className="px-3 py-3 border-r border-[#d4af37]">Points Bet</th>
+                <th className="px-3 py-3 rounded-tr-lg">Score</th>
               </tr>
             </thead>
 
             <tbody>
-              {/* NO ANIMATION ON INDIVIDUAL ROWS */}
               {dummyLeaderboardData.map((team, index) => (
                 <tr
                   key={index}
                   className={`border-b border-[#d4af37]/60 transition duration-300 ease-in-out text-white ${
                     team.rank <= 3
-                      ? "text-xl font-extrabold text-[#ffe066] bg-[#3b2600]/60 hover:bg-[#5a3d00]/60"
-                      : "text-lg hover:bg-[#3b2600]/40"
+                      ? "text-base sm:text-xl font-extrabold text-[#ffe066] bg-[#3b2600]/60 hover:bg-[#5a3d00]/60"
+                      : "text-sm sm:text-lg hover:bg-[#3b2600]/40" 
                   }`}
                 >
-                  <td className="whitespace-nowrap px-6 py-3 border-r border-[#d4af37]/50">
+                  <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
                     {team.rank}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-3 border-r border-[#d4af37]/50">
+                  <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
                     {team.teamName}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-3 border-r border-[#d4af37]/50">
+                  <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
                     {team.members}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-3 border-r border-[#d4af37]/50">
+                  <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
                     {team.pointsBet}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-3 text-white font-semibold">
+                  <td className="whitespace-nowrap px-3 py-3 text-white font-semibold">
                     {team.score}{" "}
                     {team.rank <= 3 && (
                       <span role="img" aria-label="magic wand">🪄</span>
