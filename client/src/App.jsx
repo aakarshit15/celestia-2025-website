@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Leaderboard from "./pages/leaderboard";
 import Login from "./pages/Login";
-import Button from "./pages/Button";
+import Button from "./pages/Button"; 
 import "./index.css";
 import "./App.css";
 import Simon_says from "./pages/games/simon_says/app.jsx";
@@ -70,7 +70,7 @@ function Home() {
         {...entranceTransitionProps} 
       >
         <motion.div>
-        <Button textBefore="Login" textAfter="Login" to="/login" />
+          <Button textBefore="Login" textAfter="Login" to="/login" />
         </motion.div>
       </motion.nav>
 
@@ -91,23 +91,23 @@ function Home() {
                     className={genieSizeClasses} 
                     style={{ filter: "drop-shadow(0 0 15px rgba(0,0,0,0.5))" }}
                     {...floatProps} 
-          />
+                />
             </motion.div>
 
             {/* Header Image (HUGE) - Uses drop-down animation */}
             <motion.img
-          src="/header.png"
+              src="/header.png" 
               alt="Website Heading"
               className="w-full max-w-none lg:w-[120%] xl:w-[150%] 2xl:w-[170%]" 
               {...dropInTransitionProps} 
-        />
-
+            />
+            
             {/* Invisible Spacer (Symmetry Restored) */}
             <motion.div 
                 className={`${genieSizeClasses} ml-0`} 
             />
         </div>
-
+        
         {/* Leaderboard Button - Uses simple fade-in */}
         <motion.div 
             className="mt-10 pointer-events-auto"
