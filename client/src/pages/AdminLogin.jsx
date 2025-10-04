@@ -13,7 +13,7 @@ const AdminLogin = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault()
-    
+
     if (!email || !password) {
       alert('Please fill in all fields')
       return
@@ -30,7 +30,10 @@ const AdminLogin = () => {
 
       Cookies.set("token", response.data.data.token);
       Cookies.set("userRole", response.data.data.admin.role);
-      navigate('/admin/scoring');
+      setTimeout(() => {
+        // console.log("hello");
+        navigate('/admin/scoring');
+      }, 2000);
     } catch (error) {
       // alert('Login failed. Please try again.')
       console.log('Login error:', error)
@@ -99,11 +102,10 @@ const AdminLogin = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-2 sm:py-3 px-4 rounded-md font-medium text-sm sm:text-base text-white transition-colors ${
-                loading
+              className={`w-full py-2 sm:py-3 px-4 rounded-md font-medium text-sm sm:text-base text-white transition-colors ${loading
                   ? 'bg-indigo-400 cursor-not-allowed'
                   : 'bg-indigo-600 hover:bg-indigo-700'
-              }`}
+                }`}
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>

@@ -6,7 +6,7 @@ import { assignPointsByQr, assignPointsByTeamCode, verifyQr } from "../apis/scor
 import { toast } from 'react-toastify';
 import axios from "axios";
 import Cookies from "js-cookie";
-import { QrReader } from 'react-qr-reader';
+import { Html5QrcodeScanner } from 'html5-qrcode';
 
 const Scoring = () => {
   const [teams, setTeams] = useState([]);
@@ -17,6 +17,7 @@ const Scoring = () => {
   const [winnerInput, setWinnerInput] = useState('');
   const [loserInput, setLoserInput] = useState('');
   const [qrResult, setQrResult] = useState(null);
+  const [scanner, setScanner] = useState(null);
 
   const gameScoring = {
     'Game A': { win: 10, lose: -2 },
@@ -54,7 +55,7 @@ const Scoring = () => {
 
     try {
 
-      if (inputMethod === 'code') {
+      // if (inputMethod === 'code') {
         if (!winnerInput) {
           alert('Please enter the winning team code')
           return
@@ -74,7 +75,7 @@ const Scoring = () => {
         });
         console.log("Points given: ", response.data);
         toast.success("Score Recorded Successfully");
-      }
+      // }
 
     } catch (error) {
       console.log("Error in scoring", error);
@@ -107,26 +108,65 @@ const Scoring = () => {
   }
 
   // Update the handleQRScan function
-  const handleQRScan = (scanData) => {
-    try {
-      if (scanData) {
-        // Parse the QR code data
-        const parsedData = JSON.parse(scanData);
+  // const handleQRScan = (scanData) => {
+  //   try {
+  //     if (scanData) {
+  //       // Parse the QR code data
+  //       const parsedData = JSON.parse(scanData);
 
-        if (parsedData.teamId) {
-          // Set the winner input with the teamId from QR
-          setWinnerInput(parsedData.teamId);
-          setQrResult(parsedData.teamId);
-          toast.success("QR Code scanned successfully!");
-        } else {
-          toast.error("Invalid QR code format");
-        }
+  //       if (parsedData.teamId) {
+  //         // Set the winner input with the teamId from QR
+  //         setWinnerInput(parsedData.teamId);
+  //         setQrResult(parsedData.teamId);
+  //         toast.success("QR Code scanned successfully!");
+  //       } else {
+  //         toast.error("Invalid QR code format");
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("QR Scan error:", error);
+  //     toast.error("Failed to process QR code");
+  //   }
+  // }
+
+  const handleQRScan = (decodedText) => {
+    try {
+      const parsedData = JSON.parse(decodedText);
+      console.log("Qr data: ", parsedData);
+      if (parsedData.teamId) {
+        setWinnerInput(parsedData.teamId);
+        toast.success("Team code scanned successfully!");
+      } else {
+        toast.error("Invalid QR code format");
       }
     } catch (error) {
       console.error("QR Scan error:", error);
       toast.error("Failed to process QR code");
     }
-  }
+  };
+
+  useEffect(() => {
+    if (inputMethod === 'qr') {
+      const scanner = new Html5QrcodeScanner("qr-reader", {
+        qrbox: {
+          width: 250,
+          height: 250,
+        },
+        fps: 5,
+      });
+
+      scanner.render(handleQRScan, (error) => {
+        console.error("QR Scanner error:", error);
+      });
+
+      // Cleanup scanner when component unmounts
+      return () => {
+        scanner.clear().catch(error => {
+          console.error("Failed to clear scanner", error);
+        });
+      };
+    }
+  }, [inputMethod]);
 
   // Add error handler for QR scanner
   const handleQRError = (error) => {
@@ -154,7 +194,7 @@ const Scoring = () => {
               <select
                 value={selectedGame}
                 onChange={(e) => setSelectedGame(e.target.value)}
-                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-[10px] sm:text-xs"
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-[10px] sm:text-xs text-black"
               >
                 {games.map((game) => (
                   <option key={game._id} value={game._id}>
@@ -238,7 +278,7 @@ const Scoring = () => {
                 <div className="bg-white border-2 border-dashed border-green-300 rounded-lg p-6 sm:p-8 mb-3">
                   <div className="flex flex-col items-center justify-center text-center">
                     {/* Add your QR scanner component here */}
-                    <QrReader
+                    {/* <QrReader
                       onResult={(result, error) => {
                         if (result) {
                           handleQRScan(result?.text);
@@ -249,7 +289,8 @@ const Scoring = () => {
                       }}
                       constraints={{ facingMode: 'environment' }}
                       className="w-full max-w-sm mx-auto"
-                    />
+                    /> */}
+                    <div id="qr-reader" className="w-full max-w-sm mx-auto"></div>
                     <p className="text-sm sm:text-base text-gray-600 mt-4">
                       Position QR code within the frame
                     </p>
@@ -262,6 +303,16 @@ const Scoring = () => {
                       <span className="font-medium">Team ID: </span>
                       {qrResult}
                     </p>
+                  </div>
+                )}
+                {inputMethod === 'qr' && (
+                  <div className="border-2 border-green-200 rounded-lg p-4">
+                    <div id="qr-reader" className="w-full max-w-sm mx-auto"></div>
+                    {winnerInput && (
+                      <p className="text-sm text-green-600 mt-2">
+                        Scanned Team ID: {winnerInput}
+                      </p>
+                    )}
                   </div>
                 )}
 
