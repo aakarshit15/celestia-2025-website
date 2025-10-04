@@ -11,17 +11,17 @@ const FlappyBird = () => {
   const bird = useRef(200);
   const speed = useRef(0);
   const gravity = 0.25;
-  const jump = -10;
+  const jump = useRef(-8); // initial jump
+  const strongJump = -10; // after score >= 20
 
   // Obstacles
   const obstacles = useRef([]);
-  const obstacles_timer = useRef(0);
 
   // Score
   const score = useRef(0);
 
   // Pillar speed
-  const pillarSpeed = useRef(1.5); // starts slow
+  const pillarSpeed = useRef(1.5);
 
   // Background animation for mobile
   const bgOffset = useRef(0);
@@ -64,8 +64,9 @@ const FlappyBird = () => {
     const ctx = canvas.getContext("2d");
     let frameId;
 
-    const GAP = 600;
-    const MIN_PIPE_HEIGHT = 150;
+    const MIN_PIPE_HEIGHT = 50;
+    const GAP_MIN = 350;
+    const GAP_MAX = 450;
     const birdX = 80;
     const birdWidth = 80;
     const birdHeight = 120;
@@ -91,26 +92,21 @@ const FlappyBird = () => {
     };
 
     const drawTitle = () => {
-      // Responsive font sizes
       const titleSize = Math.min(canvas.width / 8, 100);
       const instructionSize = Math.min(canvas.width / 20, 35);
-      
-      // Responsive bird size for start screen
       const startBirdWidth = Math.min(canvas.width / 6, 100);
-      const startBirdHeight = Math.min(canvas.width / 4, 150);
+      const startBirdHeight = Math.min(canvas.height / 4, 150);
 
-      // Draw semi-transparent overlay for better text visibility
       ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
       const overlayY = canvas.height / 2 - canvas.height / 4;
       const overlayHeight = canvas.height / 2;
       ctx.fillRect(0, overlayY, canvas.width, overlayHeight);
 
-      // Title with shadow effect
       ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
       ctx.shadowBlur = 15;
       ctx.shadowOffsetX = 4;
       ctx.shadowOffsetY = 4;
-      
+
       ctx.fillStyle = "#FFD700";
       ctx.font = `bold ${titleSize}px 'Brush Script MT', cursive`;
       ctx.textAlign = "center";
@@ -119,12 +115,10 @@ const FlappyBird = () => {
       ctx.strokeText("Flappy Bird", canvas.width / 2, canvas.height / 2 - canvas.height / 8);
       ctx.fillText("Flappy Bird", canvas.width / 2, canvas.height / 2 - canvas.height / 8);
 
-      // Reset shadow for bird
       ctx.shadowBlur = 0;
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = 0;
 
-      // Animated bird (simple bounce effect)
       const bounceOffset = Math.sin(Date.now() / 300) * 15;
       ctx.drawImage(
         birdImgRef.current,
@@ -134,86 +128,79 @@ const FlappyBird = () => {
         startBirdHeight
       );
 
-      // "Click to start" with pulsing effect
       const pulseAlpha = 0.7 + Math.sin(Date.now() / 500) * 0.3;
       ctx.fillStyle = `rgba(255, 255, 255, ${pulseAlpha})`;
       ctx.font = `bold ${instructionSize}px Arial`;
       ctx.lineWidth = 3;
       ctx.strokeStyle = "rgba(0, 0, 0, 0.8)";
-      ctx.strokeText("Click to Start", canvas.width / 2, canvas.height / 2 + canvas.height / 6);
-      ctx.fillText("Click to Start", canvas.width / 2, canvas.height / 2 + canvas.height / 6);
+      ctx.strokeText("Click or press SPACE to Start", canvas.width / 2, canvas.height / 2 + canvas.height / 6);
+      ctx.fillText("Click or press SPACE to Start", canvas.width / 2, canvas.height / 2 + canvas.height / 6);
 
-      // Add a subtle instruction hint
       ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
       ctx.font = `${instructionSize * 0.5}px Arial`;
-      ctx.fillText("Click or tap to flap", canvas.width / 2, canvas.height / 2 + canvas.height / 6 + instructionSize);
+      ctx.fillText("Click, tap, or press SPACE to flap", canvas.width / 2, canvas.height / 2 + canvas.height / 6 + instructionSize);
     };
 
     const drawGameOver = () => {
       ctx.fillStyle = "rgba(0,0,0,0.6)";
-      ctx.fillRect(canvas.width / 2 - 200, canvas.height / 2 - 80, 400, 160);
+      ctx.fillRect(canvas.width / 2 - 200, canvas.height / 2 - 100, 400, 200);
 
       ctx.fillStyle = "red";
       ctx.font = "bold 40px Arial";
       ctx.textAlign = "center";
-      ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 10);
+      ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
 
       ctx.fillStyle = "white";
       ctx.font = "20px Arial";
-      ctx.fillText(
-        "Click anywhere to restart",
-        canvas.width / 2,
-        canvas.height / 2 + 40
-      );
+      ctx.fillText(`Your Score is: ${score.current}`, canvas.width / 2, canvas.height / 2 + 20);
+
+      ctx.fillText("Click or press SPACE to restart", canvas.width / 2, canvas.height / 2 + 60);
     };
 
     const gameLoop = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw background - preserve aspect ratio and scroll on mobile
+
+      // Background scrolling
       if (isMobile.current && bgWidth.current > 0) {
-        // Calculate scale to fit height, maintaining aspect ratio
         const scale = canvas.height / bgHeight.current;
         const scaledWidth = bgWidth.current * scale;
-        
         if (gameState === "playing" || gameState === "gameOver") {
           bgOffset.current -= 1;
-          if (bgOffset.current <= -scaledWidth) {
-            bgOffset.current = 0;
-          }
+          if (bgOffset.current <= -scaledWidth) bgOffset.current = 0;
         }
-        
-        // Draw two copies for seamless scrolling
         ctx.drawImage(bg.current, bgOffset.current, 0, scaledWidth, canvas.height);
         ctx.drawImage(bg.current, bgOffset.current + scaledWidth, 0, scaledWidth, canvas.height);
       } else {
-        // Desktop: stretch to fill screen
         ctx.drawImage(bg.current, 0, 0, canvas.width, canvas.height);
       }
 
-      if (gameState === "start") {
-        drawTitle();
-      }
+      if (gameState === "start") drawTitle();
 
       if (gameState === "playing") {
+        // Increase jump power after score 20
+        if (score.current >= 20) jump.current = strongJump;
+
         speed.current += gravity;
         bird.current += speed.current;
-
         drawBird();
 
-        // Gradually increase pillar speed over time
-        if (pillarSpeed.current < 6) pillarSpeed.current += 0.001;
+        if (pillarSpeed.current < 10) pillarSpeed.current += 0.002;
 
-        // Spawn pillars slower
-        if (obstacles_timer.current % 220 === 0) {
-          const maxPipeHeight = canvas.height - GAP - MIN_PIPE_HEIGHT;
-          const topHeight =
-            Math.random() * (maxPipeHeight - MIN_PIPE_HEIGHT) + MIN_PIPE_HEIGHT;
+        // Spawn pillars
+        const lastPillar = obstacles.current[obstacles.current.length - 1];
+        const minDistance = 250;
+        const maxDistance = 380;
+        const distanceBetween = Math.random() * (maxDistance - minDistance) + minDistance;
+
+        if (!lastPillar || lastPillar.x < canvas.width - distanceBetween) {
+          const randomGap = Math.random() * (GAP_MAX - GAP_MIN) + GAP_MIN;
+          const maxTopHeight = canvas.height - randomGap - MIN_PIPE_HEIGHT;
+          const topHeight = Math.random() * (maxTopHeight - MIN_PIPE_HEIGHT) + MIN_PIPE_HEIGHT;
 
           obstacles.current.push({
             x: canvas.width,
             top: topHeight,
-            bottom: topHeight + GAP,
+            bottom: topHeight + randomGap,
             passed: false,
           });
         }
@@ -221,17 +208,18 @@ const FlappyBird = () => {
         obstacles.current.forEach((obs, index) => {
           obs.x -= pillarSpeed.current;
 
-          const pipeWidth = 50;
-
-          // Draw top and bottom pillars as rectangles (fast, fewer pixels)
+          const pipeWidth = 60;
           ctx.drawImage(pillarImg.current, obs.x, 0, pipeWidth, obs.top);
           ctx.drawImage(pillarImg.current, obs.x, obs.bottom, pipeWidth, canvas.height - obs.bottom);
 
+          // Strict collision
+          const collisionPadding = 20;
           const hitX =
-            birdX + birdWidth / 2 > obs.x && birdX - birdWidth / 2 < obs.x + pipeWidth;
+            birdX + birdWidth / 2 - collisionPadding > obs.x &&
+            birdX - birdWidth / 2 + collisionPadding < obs.x + pipeWidth;
           const hitY =
-            bird.current - birdHeight / 2 < obs.top ||
-            bird.current + birdHeight / 2 > obs.bottom;
+            bird.current - birdHeight / 2 + collisionPadding < obs.top ||
+            bird.current + birdHeight / 2 - collisionPadding > obs.bottom;
 
           if (hitX && hitY) setGameState("gameOver");
 
@@ -245,14 +233,13 @@ const FlappyBird = () => {
 
         if (bird.current + birdHeight / 2 > canvas.height) setGameState("gameOver");
 
-        obstacles_timer.current++;
         drawScore();
       }
 
       if (gameState === "gameOver") {
         drawBird();
         obstacles.current.forEach((obs) => {
-          const pipeWidth = 50;
+          const pipeWidth = 60;
           ctx.drawImage(pillarImg.current, obs.x, 0, pipeWidth, obs.top);
           ctx.drawImage(pillarImg.current, obs.x, obs.bottom, pipeWidth, canvas.height - obs.bottom);
         });
@@ -274,14 +261,32 @@ const FlappyBird = () => {
       speed.current = 0;
       score.current = 0;
       obstacles.current = [];
-      obstacles_timer.current = 0;
       pillarSpeed.current = 1.5;
+      jump.current = -8; // reset jump
     } else if (gameState === "playing") {
-      speed.current = jump;
+      speed.current = jump.current;
     }
   };
 
-  return <canvas ref={canvasRef} className="w-screen h-screen block" onClick={handleClick} />;
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.code === "Space" || e.key === " ") {
+        e.preventDefault();
+        handleClick();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [gameState]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="w-screen h-screen block"
+      onClick={handleClick}
+      onTouchStart={handleClick}
+    />
+  );
 };
 
 export default FlappyBird;
