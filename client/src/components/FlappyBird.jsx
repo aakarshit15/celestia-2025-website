@@ -29,6 +29,10 @@ const FlappyBird = () => {
   const bgWidth = useRef(0);
   const bgHeight = useRef(0);
 
+  // Game over timer
+  const gameOverTimer = useRef(null);
+  const showRestart = useRef(false);
+
   // Images
   const bg = useRef(new Image());
   bg.current.src = bgImg;
@@ -41,12 +45,14 @@ const FlappyBird = () => {
   const birdImgRef = useRef(new Image());
   birdImgRef.current.src = birdImg;
 
+  // Basic page styling
   useEffect(() => {
     document.body.style.margin = "0";
     document.body.style.padding = "0";
     document.body.style.overflow = "hidden";
   }, []);
 
+  // Canvas resizing
   useEffect(() => {
     const canvas = canvasRef.current;
     const resizeCanvas = () => {
@@ -58,6 +64,18 @@ const FlappyBird = () => {
     window.addEventListener("resize", resizeCanvas);
     return () => window.removeEventListener("resize", resizeCanvas);
   }, []);
+
+  // Start 5-second restart timer when game over
+  useEffect(() => {
+    if (gameState === "gameOver") {
+      showRestart.current = false;
+      if (gameOverTimer.current) clearTimeout(gameOverTimer.current);
+      gameOverTimer.current = setTimeout(() => {
+        showRestart.current = true;
+        gameOverTimer.current = null;
+      }, 3000);
+    }
+  }, [gameState]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -112,8 +130,16 @@ const FlappyBird = () => {
       ctx.textAlign = "center";
       ctx.lineWidth = Math.max(titleSize / 10, 8);
       ctx.strokeStyle = "#8B4513";
-      ctx.strokeText("Flappy Bird", canvas.width / 2, canvas.height / 2 - canvas.height / 8);
-      ctx.fillText("Flappy Bird", canvas.width / 2, canvas.height / 2 - canvas.height / 8);
+      ctx.strokeText(
+        "Flappy Bird",
+        canvas.width / 2,
+        canvas.height / 2 - canvas.height / 8
+      );
+      ctx.fillText(
+        "Flappy Bird",
+        canvas.width / 2,
+        canvas.height / 2 - canvas.height / 8
+      );
 
       ctx.shadowBlur = 0;
       ctx.shadowOffsetX = 0;
@@ -133,12 +159,24 @@ const FlappyBird = () => {
       ctx.font = `bold ${instructionSize}px Arial`;
       ctx.lineWidth = 3;
       ctx.strokeStyle = "rgba(0, 0, 0, 0.8)";
-      ctx.strokeText("Click or press SPACE to Start", canvas.width / 2, canvas.height / 2 + canvas.height / 6);
-      ctx.fillText("Click or press SPACE to Start", canvas.width / 2, canvas.height / 2 + canvas.height / 6);
+      ctx.strokeText(
+        "Click or press SPACE to Start",
+        canvas.width / 2,
+        canvas.height / 2 + canvas.height / 6
+      );
+      ctx.fillText(
+        "Click or press SPACE to Start",
+        canvas.width / 2,
+        canvas.height / 2 + canvas.height / 6
+      );
 
       ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
       ctx.font = `${instructionSize * 0.5}px Arial`;
-      ctx.fillText("Click, tap, or press SPACE to flap", canvas.width / 2, canvas.height / 2 + canvas.height / 6 + instructionSize);
+      ctx.fillText(
+        "Click, tap, or press SPACE to flap",
+        canvas.width / 2,
+        canvas.height / 2 + canvas.height / 6 + instructionSize
+      );
     };
 
     const drawGameOver = () => {
@@ -153,8 +191,6 @@ const FlappyBird = () => {
       ctx.fillStyle = "white";
       ctx.font = "20px Arial";
       ctx.fillText(`Your Score is: ${score.current}`, canvas.width / 2, canvas.height / 2 + 20);
-
-      ctx.fillText("Click or press SPACE to restart", canvas.width / 2, canvas.height / 2 + 60);
     };
 
     const gameLoop = () => {
@@ -177,7 +213,6 @@ const FlappyBird = () => {
       if (gameState === "start") drawTitle();
 
       if (gameState === "playing") {
-        // Increase jump power after score 20
         if (score.current >= 20) jump.current = strongJump;
 
         speed.current += gravity;
@@ -188,8 +223,8 @@ const FlappyBird = () => {
 
         // Spawn pillars
         const lastPillar = obstacles.current[obstacles.current.length - 1];
-        const minDistance = 250;
-        const maxDistance = 380;
+        const minDistance = 300; // increased by 50
+        const maxDistance = 430; // increased by 50
         const distanceBetween = Math.random() * (maxDistance - minDistance) + minDistance;
 
         if (!lastPillar || lastPillar.x < canvas.width - distanceBetween) {
@@ -212,7 +247,7 @@ const FlappyBird = () => {
           ctx.drawImage(pillarImg.current, obs.x, 0, pipeWidth, obs.top);
           ctx.drawImage(pillarImg.current, obs.x, obs.bottom, pipeWidth, canvas.height - obs.bottom);
 
-          // Strict collision
+          // Collision detection
           const collisionPadding = 20;
           const hitX =
             birdX + birdWidth / 2 - collisionPadding > obs.x &&
@@ -245,6 +280,13 @@ const FlappyBird = () => {
         });
         drawScore();
         drawGameOver();
+
+        if (showRestart.current) {
+          ctx.fillStyle = "white";
+          ctx.font = "20px Arial";
+          ctx.textAlign = "center";
+          ctx.fillText("Click or press SPACE to restart", canvas.width / 2, canvas.height / 2 + 60);
+        }
       }
 
       frameId = requestAnimationFrame(gameLoop);
@@ -255,14 +297,16 @@ const FlappyBird = () => {
   }, [gameState]);
 
   const handleClick = () => {
-    if (gameState === "start" || gameState === "gameOver") {
+    if (gameState === "start" || (gameState === "gameOver" && showRestart.current)) {
       setGameState("playing");
       bird.current = 200;
       speed.current = 0;
       score.current = 0;
       obstacles.current = [];
       pillarSpeed.current = 1.5;
-      jump.current = -8; // reset jump
+      jump.current = -8;
+      showRestart.current = false;
+      if (gameOverTimer.current) clearTimeout(gameOverTimer.current);
     } else if (gameState === "playing") {
       speed.current = jump.current;
     }
