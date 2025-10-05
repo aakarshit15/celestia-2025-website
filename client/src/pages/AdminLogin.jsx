@@ -4,6 +4,7 @@ import { Lock, Mail } from 'lucide-react'
 import { adminLogin } from "../apis/user.api";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from 'react-toastify';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('')
@@ -90,7 +91,7 @@ const AdminLogin = () => {
                   <Lock className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  type="password"
+                  type="text"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required

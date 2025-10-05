@@ -175,13 +175,13 @@ export default function App() {
         <Route
           path="/admin/register"
           element={
-            <ProtectedRoute element={Register} allowedRoles={["admin"]} />
+            <ProtectedRoute element={Register} allowedRoles={["admin", "superadmin"]} />
           }
         />
         <Route
           path="/admin/scoring"
           element={
-            <ProtectedRoute element={Scoring} allowedRoles={["admin"]} />
+            <ProtectedRoute element={Scoring} allowedRoles={["admin", "superadmin"]} />
           }
         />
       </Routes>
