@@ -20,9 +20,14 @@ const participantSchema = new mongoose.Schema(
       trim: true,
     },
     teamId: {
-      type: String,
+      type: Number,
       required: true,
       unique: true,
+    },
+    teamSize: {
+      type: Number,
+      default: 1,
+      required: true,
     },
     totalPoints: {
       type: Number,
@@ -49,6 +54,10 @@ const participantSchema = new mongoose.Schema(
         },
       },
     ],
+    pointsBet: {
+      type: Number,
+      default: 0,
+    },
     qrCode: {
       type: String,
       required: true,

@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { Participant } from "../models/index.js";
 
 export const formatResponse = (data, message = "Success", status = 200) => {
   return {
@@ -17,8 +18,14 @@ export const handleError = (error, res) => {
   });
 };
 
-export const generateTeamId = () => {
-  return `CELESTIA-${uuidv4().split("-")[0].toUpperCase()}`;
+// export const generateTeamId = () => {
+//   return `CELESTIA-${uuidv4().split("-")[0].toUpperCase()}`;
+// };
+
+export const generateTeamId = async () => {
+  const count = await Participant.countDocuments();
+  console.log("Current participant count:", count);
+  return 1000 + count;
 };
 
 export const validateEmail = (email) => {

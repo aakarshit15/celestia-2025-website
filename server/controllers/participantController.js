@@ -12,10 +12,10 @@ import {
 
 export const registerParticipant = async (req, res) => {
   try {
-    const { teamName, leaderName, leaderEmail } = req.body;
+    const { teamName, leaderName, leaderEmail, teamSize } = req.body;
 
     // Validation
-    if (!teamName || !leaderName || !leaderEmail) {
+    if (!teamName || !leaderName || !leaderEmail || !teamSize) {
       return res
         .status(400)
         .json(formatResponse(null, "All fields are required", 400));
@@ -36,7 +36,7 @@ export const registerParticipant = async (req, res) => {
     }
 
     // Generate unique team ID
-    const teamId = generateTeamId();
+    const teamId = await generateTeamId();
 
     // Generate QR code
     const qrCode = await generateQRCode(teamId);
@@ -47,6 +47,7 @@ export const registerParticipant = async (req, res) => {
       leaderEmail,
       teamName,
       teamId,
+      teamSize,
       qrCode,
     });
 
@@ -62,6 +63,7 @@ export const registerParticipant = async (req, res) => {
           teamName,
           leaderName,
           leaderEmail,
+          teamSize
         },
         "Registration successful! Check your email for QR code.",
         201
@@ -108,7 +110,7 @@ export const getAllParticipants = async (req, res) => {
 export const getLeaderboard = async (req, res) => {
   try {
     const leaderboard = await Participant.find()
-      .select("teamName leaderName totalPoints")
+      .select("teamName teamSize pointsBet totalPoints")
       .sort({ totalPoints: -1 })
       .limit(10);
 

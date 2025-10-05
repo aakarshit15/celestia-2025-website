@@ -39,7 +39,7 @@ const TABLE_DELAY = HEADER_DURATION + 0.2;
 const Leaderboard = () => {
 
   const [leaderboard, setLeaderboard] = useState(
-    []
+    JSON.parse(localStorage.getItem("leaderboard")) || []
   );
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const Leaderboard = () => {
       try {
         const response = await axios.get(getLeaderboard);
         // if (!response.ok) throw new Error("Network error");
-        const data = await response.data;
+        const data = await response.data.data;
         console.log("Fetched leaderboard data:", data);
 
         // update only if data changed
@@ -64,8 +64,8 @@ const Leaderboard = () => {
     fetchLeaderboard();
 
     // poll every 10 seconds
-    // const interval = setInterval(fetchLeaderboard, 10000);
-    // return () => clearInterval(interval);
+    const interval = setInterval(fetchLeaderboard, 10000);
+    return () => clearInterval(interval);
   }, [leaderboard]);
 
 
@@ -165,12 +165,52 @@ const Leaderboard = () => {
             </thead>
 
             <tbody>
-              {dummyLeaderboardData.map((team, index) => (
+              {leaderboard.length <= 0 ? (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="py-6 text-center text-gray-500 italic"
+                  >
+                    No teams yet
+                  </td>
+                </tr>
+              ) : (
+                leaderboard.map((team, index) => (
+                  <tr
+                    key={index}
+                    className={`border-b border-[#d4af37]/60 transition duration-300 ease-in-out text-white ${team.rank <= 3
+                      ? "text-base sm:text-xl font-extrabold text-[#ffe066] bg-[#3b2600]/60 hover:bg-[#5a3d00]/60"
+                      : "text-sm sm:text-lg hover:bg-[#3b2600]/40"
+                      }`}
+                  >
+                    <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
+                      {index + 1}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
+                      {team.teamName}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
+                      {team.teamSize}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
+                      {team.pointsBet}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-3 text-white font-semibold">
+                      {team.totalPoints}{" "}
+                      {index < 3 && (
+                        <span role="img" aria-label="magic wand">🪄</span>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )
+              }
+              {/* {dummyLeaderboardData.map((team, index) => (
                 <tr
                   key={index}
                   className={`border-b border-[#d4af37]/60 transition duration-300 ease-in-out text-white ${team.rank <= 3
-                      ? "text-base sm:text-xl font-extrabold text-[#ffe066] bg-[#3b2600]/60 hover:bg-[#5a3d00]/60"
-                      : "text-sm sm:text-lg hover:bg-[#3b2600]/40"
+                    ? "text-base sm:text-xl font-extrabold text-[#ffe066] bg-[#3b2600]/60 hover:bg-[#5a3d00]/60"
+                    : "text-sm sm:text-lg hover:bg-[#3b2600]/40"
                     }`}
                 >
                   <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
@@ -192,7 +232,7 @@ const Leaderboard = () => {
                     )}
                   </td>
                 </tr>
-              ))}
+              ))} */}
             </tbody>
           </table>
         </div>

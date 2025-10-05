@@ -12,11 +12,12 @@ const Register = () => {
   const [teamName, setTeamName] = useState('')
   const [leaderName, setLeaderName] = useState('')
   const [leaderEmail, setLeaderEmail] = useState('')
+  const [teamSize, setTeamSize] = useState('')
 
   const handleRegister = async () => {
     console.log("In handle register");
 
-    if (!teamName || !leaderName || !leaderEmail) {
+    if (!teamName || !leaderName || !leaderEmail || !teamSize) {
       alert('Please fill in all fields')
       return
     }
@@ -24,7 +25,8 @@ const Register = () => {
     const newTeam = {
       teamName,
       leaderName,
-      leaderEmail
+      leaderEmail,
+      teamSize
     }
 
     try {
@@ -134,6 +136,18 @@ const Register = () => {
                 onChange={(e) => setLeaderEmail(e.target.value)}
                 className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm sm:text-base"
                 placeholder="Enter leader email"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Team Size
+              </label>
+              <input
+                type="number"
+                value={teamSize}
+                onChange={(e) => setTeamSize(e.target.value)}
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm sm:text-base"
+                placeholder="Enter Team Size"
               />
             </div>
 
