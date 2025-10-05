@@ -57,6 +57,18 @@ const Navbar = () => {
               <BarChart3 className="mr-1 sm:mr-2 h-4 w-4" />
               Leaderboard
             </Link>
+
+            <Link
+              to="/admin/camelauction"
+              className={`inline-flex items-center px-3 sm:px-4 py-2 border-b-2 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors ${
+                isActive('/admin/camelauction')
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              <BarChart3 className="mr-1 sm:mr-2 h-4 w-4" />
+              Camel/Auction Game
+            </Link>
           </div>
         </div>
       </div>

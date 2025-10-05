@@ -13,6 +13,8 @@ import Simon_says from "./pages/games/simon_says/app.jsx";
 import Scoring from "./pages/Scoring.jsx";
 import Register from "./pages/register.jsx";
 import AdminLogin from "./pages/AdminLogin.jsx";
+import CamelAuction from "./pages/CamelAuction.jsx";
+import ParticipantHistory from "./pages/ParticipantHistory.jsx";
 
 // Define the appearance timing
 const APPEARANCE_DELAY = 1.0; 
@@ -170,6 +172,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/teamprogress" element={<ParticipantHistory />} />
         <Route path="/games/simon_says" element={<Simon_says />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route
@@ -182,6 +185,12 @@ export default function App() {
           path="/admin/scoring"
           element={
             <ProtectedRoute element={Scoring} allowedRoles={["admin", "superadmin"]} />
+          }
+        />
+        <Route
+          path="/admin/camelauction"
+          element={
+            <ProtectedRoute element={CamelAuction} allowedRoles={["admin", "superadmin"]} />
           }
         />
       </Routes>
