@@ -4,7 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Leaderboard from "./pages/leaderboard";
+import Leaderboard from "./pages/Leaderboard.jsx";
 import Login from "./pages/Login";
 import Button from "./pages/Button"; 
 import "./index.css";

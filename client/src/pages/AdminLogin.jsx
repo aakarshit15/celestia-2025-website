@@ -30,12 +30,13 @@ const AdminLogin = () => {
 
       Cookies.set("token", response.data.data.token);
       Cookies.set("userRole", response.data.data.admin.role);
+      toast.success("Login successful!");
       setTimeout(() => {
-        // console.log("hello");
         navigate('/admin/scoring');
       }, 2000);
     } catch (error) {
       // alert('Login failed. Please try again.')
+      toast.error("Login failed. Please check your credentials.", error);
       console.log('Login error:', error)
     } finally {
       setLoading(false)
