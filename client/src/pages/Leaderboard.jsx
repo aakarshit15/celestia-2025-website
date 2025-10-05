@@ -7,28 +7,28 @@ import { getLeaderboard } from "../apis/leaderboard.api";
 import axios from "axios";
 
 // --- DUMMY LEADERBOARD DATA (20 Entries) ---
-const dummyLeaderboardData = [
-  { rank: 1, teamName: "Power Puff Girls", members: 4, pointsBet: 200, score: 1240 },
-  { rank: 2, teamName: "Only Comps", members: 3, pointsBet: 9, score: 1095 },
-  { rank: 3, teamName: "Team Pookie", members: 5, pointsBet: 200, score: 1045 },
-  { rank: 4, teamName: "Jedi Masters", members: 4, pointsBet: 9, score: 1025 },
-  { rank: 5, teamName: "Cursed Coders", members: 2, pointsBet: 0, score: 990 },
-  { rank: 6, teamName: "Terror Trio", members: 3, pointsBet: 200, score: 940 },
-  { rank: 7, teamName: "Cod Crushers", members: 4, pointsBet: 9, score: 970 },
-  { rank: 8, teamName: "The 3 Horsemen", members: 3, pointsBet: 9, score: 865 },
-  { rank: 9, teamName: "Vaka Vaka", members: 4, pointsBet: 200, score: 855 },
-  { rank: 10, teamName: "Bloodlust", members: 5, pointsBet: 200, score: 870 },
-  { rank: 11, teamName: "Final Bosses", members: 3, pointsBet: 50, score: 820 },
-  { rank: 12, teamName: "Alpha Geeks", members: 4, pointsBet: 0, score: 790 },
-  { rank: 13, teamName: "Syntax Squad", members: 4, pointsBet: 150, score: 750 },
-  { rank: 14, teamName: "Code Breakers", members: 2, pointsBet: 20, score: 720 },
-  { rank: 15, teamName: "The Bug Hunters", members: 5, pointsBet: 100, score: 680 },
-  { rank: 16, teamName: "Pixel Pioneers", members: 3, pointsBet: 0, score: 650 },
-  { rank: 17, teamName: "Runtime Rascals", members: 4, pointsBet: 50, score: 610 },
-  { rank: 18, teamName: "Data Destroyers", members: 4, pointsBet: 100, score: 580 },
-  { rank: 19, teamName: "Logic Legends", members: 3, pointsBet: 0, score: 540 },
-  { rank: 20, teamName: "Query Quenchers", members: 5, pointsBet: 50, score: 500 },
-];
+// const dummyLeaderboardData = [
+//   { rank: 1, teamName: "Power Puff Girls", members: 4, pointsBet: 200, score: 1240 },
+//   { rank: 2, teamName: "Only Comps", members: 3, pointsBet: 9, score: 1095 },
+//   { rank: 3, teamName: "Team Pookie", members: 5, pointsBet: 200, score: 1045 },
+//   { rank: 4, teamName: "Jedi Masters", members: 4, pointsBet: 9, score: 1025 },
+//   { rank: 5, teamName: "Cursed Coders", members: 2, pointsBet: 0, score: 990 },
+//   { rank: 6, teamName: "Terror Trio", members: 3, pointsBet: 200, score: 940 },
+//   { rank: 7, teamName: "Cod Crushers", members: 4, pointsBet: 9, score: 970 },
+//   { rank: 8, teamName: "The 3 Horsemen", members: 3, pointsBet: 9, score: 865 },
+//   { rank: 9, teamName: "Vaka Vaka", members: 4, pointsBet: 200, score: 855 },
+//   { rank: 10, teamName: "Bloodlust", members: 5, pointsBet: 200, score: 870 },
+//   { rank: 11, teamName: "Final Bosses", members: 3, pointsBet: 50, score: 820 },
+//   { rank: 12, teamName: "Alpha Geeks", members: 4, pointsBet: 0, score: 790 },
+//   { rank: 13, teamName: "Syntax Squad", members: 4, pointsBet: 150, score: 750 },
+//   { rank: 14, teamName: "Code Breakers", members: 2, pointsBet: 20, score: 720 },
+//   { rank: 15, teamName: "The Bug Hunters", members: 5, pointsBet: 100, score: 680 },
+//   { rank: 16, teamName: "Pixel Pioneers", members: 3, pointsBet: 0, score: 650 },
+//   { rank: 17, teamName: "Runtime Rascals", members: 4, pointsBet: 50, score: 610 },
+//   { rank: 18, teamName: "Data Destroyers", members: 4, pointsBet: 100, score: 580 },
+//   { rank: 19, teamName: "Logic Legends", members: 3, pointsBet: 0, score: 540 },
+//   { rank: 20, teamName: "Query Quenchers", members: 5, pointsBet: 50, score: 500 },
+// ];
 // --------------------------------------------------------------------------
 
 // Animation constants
@@ -40,6 +40,12 @@ const Leaderboard = () => {
 
   const [leaderboard, setLeaderboard] = useState(
     JSON.parse(localStorage.getItem("leaderboard")) || []
+  );
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Filtered leaderboard based on search
+  const filteredLeaderboard = leaderboard.filter((team) =>
+    team.teamName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   useEffect(() => {
@@ -151,6 +157,16 @@ const Leaderboard = () => {
           animate="visible"
         />
 
+        <div className="w-full px-4 sm:px-6 mb-4">
+          <input
+            type="text"
+            placeholder="Search By Team Name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full p-2 sm:p-3 rounded-lg border-2 border-[#d4af37] bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#d4af37]"
+          />
+        </div>
+
         <div className="overflow-x-auto">
           {/* Table content scrolls horizontally on mobile via overflow-x-auto */}
           <table className="min-w-full text-left font-light border-collapse">
@@ -158,24 +174,27 @@ const Leaderboard = () => {
               <tr className="bg-[#2b1a00]/70">
                 <th className="px-3 py-3 border-r border-[#d4af37] rounded-tl-lg">Rank</th>
                 <th className="px-3 py-3 border-r border-[#d4af37]">Team Name</th>
+                {/* Score - Shows as 3rd column on mobile */}
+                <th className="px-3 py-3 border-r border-[#d4af37] sm:hidden">Score</th>
                 <th className="px-3 py-3 border-r border-[#d4af37]">Members</th>
-                <th className="px-3 py-3 border-r border-[#d4af37]">Points Bet</th>
-                <th className="px-3 py-3 rounded-tr-lg">Score</th>
+                <th className="px-3 py-3 border-r border-[#d4af37] sm:border-r-0">Points Bet</th>
+                {/* Score - Shows as last column on desktop */}
+                <th className="hidden sm:table-cell px-3 py-3 rounded-tr-lg">Score</th>
               </tr>
             </thead>
 
             <tbody>
-              {leaderboard.length <= 0 ? (
+              {filteredLeaderboard.length <= 0 ? (
                 <tr>
                   <td
                     colSpan={5}
-                    className="py-6 text-center text-gray-500 italic"
+                    className="py-6 text-center text-[#ffe066] italic z-100"
                   >
-                    No teams yet
+                    No teams to display
                   </td>
                 </tr>
               ) : (
-                leaderboard.map((team, index) => (
+                filteredLeaderboard.map((team, index) => (
                   <tr
                     key={index}
                     className={`border-b border-[#d4af37]/60 transition duration-300 ease-in-out text-white ${team.rank <= 3
@@ -189,16 +208,26 @@ const Leaderboard = () => {
                     <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
                       {team.teamName}
                     </td>
+                    <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50 sm:hidden text-white font-semibold">
+                      {team.totalPoints}{" "}
+                      {index < 3 && (
+                        <span role="img" aria-label="magic wand">
+                          🪄
+                        </span>
+                      )}
+                    </td>
                     <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
                       {team.teamSize}
                     </td>
                     <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
                       {team.pointsBet}
                     </td>
-                    <td className="whitespace-nowrap px-3 py-3 text-white font-semibold">
+                    <td className="hidden sm:table-cell whitespace-nowrap px-3 py-3 text-white font-semibold">
                       {team.totalPoints}{" "}
                       {index < 3 && (
-                        <span role="img" aria-label="magic wand">🪄</span>
+                        <span role="img" aria-label="magic wand">
+                          🪄
+                        </span>
                       )}
                     </td>
                   </tr>
