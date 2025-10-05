@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { Participant } from "../models/index.js";
 
 export const formatResponse = (data, message = "Success", status = 200) => {

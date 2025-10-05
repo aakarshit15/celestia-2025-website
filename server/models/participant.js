@@ -172,6 +172,7 @@ const participantSchema = new mongoose.Schema(
         gameId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Game",
+          default: null, // Allow null for penalties
         },
         points: {
           type: Number,
@@ -185,6 +186,13 @@ const participantSchema = new mongoose.Schema(
           adminId: mongoose.Schema.Types.ObjectId,
           adminName: String,
           adminEmail: String,
+        },
+        penalty: {
+          reason: String,
+          isDeduction: {
+            type: Boolean,
+            default: false,
+          },
         },
       },
     ],

@@ -1,4 +1,4 @@
-import { Admin } from "../models/index.js";
+import { Admin,Participant } from "../models/index.js";
 import { formatResponse, handleError } from "../utils/helpers.js";
 import jwt from "jsonwebtoken";
 
@@ -193,6 +193,314 @@ export const deactivateAdmin = async (req, res) => {
     }
 
     res.json(formatResponse(admin, "Admin deactivated successfully"));
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const getAdminPointsHistory = async (req, res) => {
+  try {
+    const participants = await Participant.find()
+      .populate("gameProgress.gameId", "gameName gamePoints description")
+      .select("teamId teamName gameProgress");
+
+    // Flatten game progress data
+    let pointsHistory = [];
+
+    participants.forEach((participant) => {
+      participant.gameProgress.forEach((progress) => {
+        pointsHistory.push({
+          teamId: participant.teamId,
+          teamName: participant.teamName,
+          gameId: progress.gameId._id,
+          gameName: progress.gameId.gameName,
+          gamePoints: progress.gameId.gamePoints,
+          pointsAwarded: progress.points,
+          assignedAt: progress.completedAt,
+          assignedBy: {
+            adminId: progress.assignedBy?.adminId || null,
+            adminName: progress.assignedBy?.adminName || "Unknown",
+            adminEmail: progress.assignedBy?.adminEmail || null,
+          },
+        });
+      });
+    });
+
+    // Sort by most recent first
+    pointsHistory.sort(
+      (a, b) => new Date(b.assignedAt) - new Date(a.assignedAt)
+    );
+
+    // Generate summary statistics
+    const adminStats = {};
+    const teamStats = {};
+    const gameStats = {};
+
+    pointsHistory.forEach((entry) => {
+      const adminName = entry.assignedBy.adminName;
+      const teamName = entry.teamName;
+      const gameName = entry.gameName;
+
+      // Admin statistics
+      if (!adminStats[adminName]) {
+        adminStats[adminName] = {
+          adminName,
+          totalPointsAssigned: 0,
+          totalAssignments: 0,
+          uniqueTeams: new Set(),
+          uniqueGames: new Set(),
+        };
+      }
+      adminStats[adminName].totalPointsAssigned += entry.pointsAwarded;
+      adminStats[adminName].totalAssignments++;
+      adminStats[adminName].uniqueTeams.add(entry.teamId);
+      adminStats[adminName].uniqueGames.add(entry.gameId);
+
+      // Team statistics
+      if (!teamStats[entry.teamId]) {
+        teamStats[entry.teamId] = {
+          teamId: entry.teamId,
+          teamName,
+          totalPointsReceived: 0,
+          totalGamesCompleted: 0,
+          uniqueAdmins: new Set(),
+          uniqueGames: new Set(),
+        };
+      }
+      teamStats[entry.teamId].totalPointsReceived += entry.pointsAwarded;
+      teamStats[entry.teamId].totalGamesCompleted++;
+      teamStats[entry.teamId].uniqueAdmins.add(adminName);
+      teamStats[entry.teamId].uniqueGames.add(entry.gameId);
+
+      // Game statistics
+      if (!gameStats[entry.gameId]) {
+        gameStats[entry.gameId] = {
+          gameId: entry.gameId,
+          gameName,
+          gamePoints: entry.gamePoints,
+          totalPointsAwarded: 0,
+          totalCompletions: 0,
+          uniqueTeams: new Set(),
+          uniqueAdmins: new Set(),
+        };
+      }
+      gameStats[entry.gameId].totalPointsAwarded += entry.pointsAwarded;
+      gameStats[entry.gameId].totalCompletions++;
+      gameStats[entry.gameId].uniqueTeams.add(entry.teamId);
+      gameStats[entry.gameId].uniqueAdmins.add(adminName);
+    });
+
+    // Convert Sets to counts and clean up data
+    const adminSummary = Object.values(adminStats)
+      .map((admin) => ({
+        ...admin,
+        uniqueTeams: admin.uniqueTeams.size,
+        uniqueGames: admin.uniqueGames.size,
+      }))
+      .sort((a, b) => b.totalPointsAssigned - a.totalPointsAssigned);
+
+    const teamSummary = Object.values(teamStats)
+      .map((team) => ({
+        ...team,
+        uniqueAdmins: team.uniqueAdmins.size,
+        uniqueGames: team.uniqueGames.size,
+      }))
+      .sort((a, b) => b.totalPointsReceived - a.totalPointsReceived);
+
+    const gameSummary = Object.values(gameStats)
+      .map((game) => ({
+        ...game,
+        uniqueTeams: game.uniqueTeams.size,
+        uniqueAdmins: game.uniqueAdmins.size,
+      }))
+      .sort((a, b) => b.totalCompletions - a.totalCompletions);
+
+    res.json(
+      formatResponse(
+        {
+          pointsHistory,
+          summary: {
+            totalPointsAssigned: pointsHistory.reduce(
+              (sum, entry) => sum + entry.pointsAwarded,
+              0
+            ),
+            totalAssignments: pointsHistory.length,
+            uniqueAdmins: adminSummary.length,
+            uniqueTeams: teamSummary.length,
+            uniqueGames: gameSummary.length,
+          },
+          statistics: {
+            byAdmin: adminSummary,
+            byTeam: teamSummary,
+            byGame: gameSummary,
+          },
+        },
+        "Points assignment history retrieved successfully"
+      )
+    );
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const subtractPointsByQR = async (req, res) => {
+  try {
+    const { qrData, points, reason } = req.body;
+
+    if (!qrData || !points) {
+      return res
+        .status(400)
+        .json(
+          formatResponse(null, "QR code data and points are required", 400)
+        );
+    }
+
+    if (points <= 0) {
+      return res
+        .status(400)
+        .json(formatResponse(null, "Points must be greater than 0", 400));
+    }
+
+    let parsedData;
+    try {
+      parsedData = JSON.parse(qrData);
+    } catch (parseError) {
+      return res
+        .status(400)
+        .json(formatResponse(null, "Invalid QR code format", 400));
+    }
+
+    const { teamId } = parsedData;
+
+    if (!teamId) {
+      return res
+        .status(400)
+        .json(formatResponse(null, "Invalid QR code data", 400));
+    }
+
+    const participant = await Participant.findOne({ teamId });
+    if (!participant) {
+      return res.status(404).json(formatResponse(null, "Team not found", 404));
+    }
+
+    // Check if team has enough points
+    if (participant.totalPoints < points) {
+      return res
+        .status(400)
+        .json(
+          formatResponse(
+            null,
+            `Insufficient points. Team has ${participant.totalPoints} points, cannot subtract ${points}`,
+            400
+          )
+        );
+    }
+
+    // Create a penalty record in gameProgress with negative points
+    participant.gameProgress.push({
+      gameId: null, // No specific game for penalty
+      points: -points, // Negative points for subtraction
+      assignedBy: {
+        adminId: req.adminId,
+        adminName: req.adminName,
+        adminEmail: req.adminEmail,
+      },
+      penalty: {
+        reason: reason || "Points deducted by admin",
+        isDeduction: true,
+      },
+    });
+
+    // Subtract points from total
+    participant.totalPoints -= points;
+    await participant.save();
+
+    res.json(
+      formatResponse(
+        {
+          teamId: participant.teamId,
+          teamName: participant.teamName,
+          pointsSubtracted: points,
+          newTotalPoints: participant.totalPoints,
+          reason: reason || "Points deducted by admin",
+          deductedBy: req.adminName,
+          timestamp: new Date(),
+        },
+        `${points} points deducted successfully by ${req.adminName}`
+      )
+    );
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const subtractPointsByTeamId = async (req, res) => {
+  try {
+    const { teamId, points, reason } = req.body;
+
+    if (!teamId || !points) {
+      return res
+        .status(400)
+        .json(formatResponse(null, "Team ID and points are required", 400));
+    }
+
+    if (points <= 0) {
+      return res
+        .status(400)
+        .json(formatResponse(null, "Points must be greater than 0", 400));
+    }
+
+    const participant = await Participant.findOne({ teamId: parseInt(teamId) });
+    if (!participant) {
+      return res.status(404).json(formatResponse(null, "Team not found", 404));
+    }
+
+    // Check if team has enough points
+    if (participant.totalPoints < points) {
+      return res
+        .status(400)
+        .json(
+          formatResponse(
+            null,
+            `Insufficient points. Team has ${participant.totalPoints} points, cannot subtract ${points}`,
+            400
+          )
+        );
+    }
+
+    // Create a penalty record in gameProgress with negative points
+    participant.gameProgress.push({
+      gameId: null, // No specific game for penalty
+      points: -points, // Negative points for subtraction
+      assignedBy: {
+        adminId: req.adminId,
+        adminName: req.adminName,
+        adminEmail: req.adminEmail,
+      },
+      penalty: {
+        reason: reason || "Points deducted by admin",
+        isDeduction: true,
+      },
+    });
+
+    // Subtract points from total
+    participant.totalPoints -= points;
+    await participant.save();
+
+    res.json(
+      formatResponse(
+        {
+          teamId: participant.teamId,
+          teamName: participant.teamName,
+          pointsSubtracted: points,
+          newTotalPoints: participant.totalPoints,
+          reason: reason || "Points deducted by admin",
+          deductedBy: req.adminName,
+          timestamp: new Date(),
+        },
+        `${points} points deducted successfully by ${req.adminName}`
+      )
+    );
   } catch (error) {
     handleError(error, res);
   }

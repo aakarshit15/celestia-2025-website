@@ -1,42 +1,61 @@
 import express from "express";
 import { adminController } from "../controllers/index.js";
-import { authenticateAdmin, isSuperAdmin } from "../middleware/auth.js";
+import {
+  authenticateAdmin,
+  logActivity,
+} from "../middleware/auth.js";
 
 const router = express.Router();
 
-// Public routes
 router.post("/login", adminController.loginAdmin);
 
-// Protected routes (require authentication)
 router.get("/profile", authenticateAdmin, adminController.getAdminProfile);
 
-// Superadmin only routes
 router.post(
   "/create",
   authenticateAdmin,
-  isSuperAdmin,
   adminController.createAdmin
 );
 
 router.get(
   "/all",
   authenticateAdmin,
-  isSuperAdmin,
   adminController.getAllAdmins
 );
 
 router.get(
   "/activity-logs/:adminId",
   authenticateAdmin,
-  isSuperAdmin,
   adminController.getAdminActivityLogs
 );
 
 router.patch(
   "/deactivate/:adminId",
   authenticateAdmin,
-  isSuperAdmin,
   adminController.deactivateAdmin
+);
+
+// Admin route - view points assignment history
+router.get(
+  "/history",
+  authenticateAdmin,
+  adminController.getAdminPointsHistory
+);
+
+// Admin route - subtract points by QR
+router.post(
+  "/subtract-points-qr",
+  authenticateAdmin,
+  logActivity("SUBTRACT_POINTS_BY_QR"),
+  adminController.subtractPointsByQR
+);
+
+// Admin route - subtract points by team ID
+router.post(
+  "/subtract-points",
+  authenticateAdmin,
+  logActivity("SUBTRACT_POINTS"),
+  adminController.subtractPointsByTeamId
 );
 
 export default router;

@@ -63,7 +63,7 @@ export const registerParticipant = async (req, res) => {
           teamName,
           leaderName,
           leaderEmail,
-          teamSize
+          teamSize,
         },
         "Registration successful! Check your email for QR code.",
         201
@@ -115,6 +115,44 @@ export const getLeaderboard = async (req, res) => {
       .limit(10);
 
     res.json(formatResponse(leaderboard, "Leaderboard retrieved successfully"));
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const loginParticipant = async (req, res) => {
+  try {
+    const { teamName, teamId } = req.body;
+
+    if (!teamName || !teamId) {
+      return res
+        .status(400)
+        .json(formatResponse(null, "Team name and Team ID are required", 400));
+    }
+
+    const participant = await Participant.findOne({
+      teamName: { $regex: new RegExp(`^${teamName}$`, "i") }, // Case-insensitive match
+      teamId: parseInt(teamId),
+    }).select("teamId teamName leaderName leaderEmail totalPoints");
+
+    if (!participant) {
+      return res
+        .status(401)
+        .json(formatResponse(null, "Invalid team name or team ID", 401));
+    }
+
+    res.json(
+      formatResponse(
+        {
+          teamId: participant.teamId,
+          teamName: participant.teamName,
+          leaderName: participant.leaderName,
+          leaderEmail: participant.leaderEmail,
+          totalPoints: participant.totalPoints,
+        },
+        "Login successful"
+      )
+    );
   } catch (error) {
     handleError(error, res);
   }

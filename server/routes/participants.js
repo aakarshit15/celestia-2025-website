@@ -5,10 +5,14 @@ import { authenticateAdmin, logActivity } from "../middleware/auth.js";
 const router = express.Router();
 
 // Registration route
-router.post("/register", 
+router.post(
+  "/register",
   authenticateAdmin,
   participantController.registerParticipant
 );
+
+// Participant login route
+router.post("/login", participantController.loginParticipant);
 
 // Get participant by team ID
 router.get("/:teamId", participantController.getParticipantByTeamId);
