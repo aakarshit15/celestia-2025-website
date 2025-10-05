@@ -219,7 +219,7 @@ const Login = () => {
           {/* Create Team Button - DARK BLUE BG, LIGHTER GOLD TEXT/OUTLINE */}
           <div> 
             <Button
-              textBefore="Create"
+              textBefore="Login"
               textAfter="Team"
               onClick={handleCreateTeam}
               to="#"

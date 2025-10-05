@@ -6,31 +6,6 @@ import { motion } from "framer-motion"; // <-- Import motion for animations
 import { getLeaderboard } from "../apis/leaderboard.api";
 import axios from "axios";
 
-// --- DUMMY LEADERBOARD DATA (20 Entries) ---
-// const dummyLeaderboardData = [
-//   { rank: 1, teamName: "Power Puff Girls", members: 4, pointsBet: 200, score: 1240 },
-//   { rank: 2, teamName: "Only Comps", members: 3, pointsBet: 9, score: 1095 },
-//   { rank: 3, teamName: "Team Pookie", members: 5, pointsBet: 200, score: 1045 },
-//   { rank: 4, teamName: "Jedi Masters", members: 4, pointsBet: 9, score: 1025 },
-//   { rank: 5, teamName: "Cursed Coders", members: 2, pointsBet: 0, score: 990 },
-//   { rank: 6, teamName: "Terror Trio", members: 3, pointsBet: 200, score: 940 },
-//   { rank: 7, teamName: "Cod Crushers", members: 4, pointsBet: 9, score: 970 },
-//   { rank: 8, teamName: "The 3 Horsemen", members: 3, pointsBet: 9, score: 865 },
-//   { rank: 9, teamName: "Vaka Vaka", members: 4, pointsBet: 200, score: 855 },
-//   { rank: 10, teamName: "Bloodlust", members: 5, pointsBet: 200, score: 870 },
-//   { rank: 11, teamName: "Final Bosses", members: 3, pointsBet: 50, score: 820 },
-//   { rank: 12, teamName: "Alpha Geeks", members: 4, pointsBet: 0, score: 790 },
-//   { rank: 13, teamName: "Syntax Squad", members: 4, pointsBet: 150, score: 750 },
-//   { rank: 14, teamName: "Code Breakers", members: 2, pointsBet: 20, score: 720 },
-//   { rank: 15, teamName: "The Bug Hunters", members: 5, pointsBet: 100, score: 680 },
-//   { rank: 16, teamName: "Pixel Pioneers", members: 3, pointsBet: 0, score: 650 },
-//   { rank: 17, teamName: "Runtime Rascals", members: 4, pointsBet: 50, score: 610 },
-//   { rank: 18, teamName: "Data Destroyers", members: 4, pointsBet: 100, score: 580 },
-//   { rank: 19, teamName: "Logic Legends", members: 3, pointsBet: 0, score: 540 },
-//   { rank: 20, teamName: "Query Quenchers", members: 5, pointsBet: 50, score: 500 },
-// ];
-// --------------------------------------------------------------------------
-
 // Animation constants
 const HEADER_DURATION = 0.8;
 const HEADER_EASING = "easeOut";
@@ -52,7 +27,6 @@ const Leaderboard = () => {
     const fetchLeaderboard = async () => {
       try {
         const response = await axios.get(getLeaderboard);
-        // if (!response.ok) throw new Error("Network error");
         const data = await response.data.data;
         console.log("Fetched leaderboard data:", data);
 
@@ -231,37 +205,8 @@ const Leaderboard = () => {
                       )}
                     </td>
                   </tr>
-                ))
-              )
+                )))
               }
-              {/* {dummyLeaderboardData.map((team, index) => (
-                <tr
-                  key={index}
-                  className={`border-b border-[#d4af37]/60 transition duration-300 ease-in-out text-white ${team.rank <= 3
-                    ? "text-base sm:text-xl font-extrabold text-[#ffe066] bg-[#3b2600]/60 hover:bg-[#5a3d00]/60"
-                    : "text-sm sm:text-lg hover:bg-[#3b2600]/40"
-                    }`}
-                >
-                  <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
-                    {team.rank}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
-                    {team.teamName}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
-                    {team.members}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3 border-r border-[#d4af37]/50">
-                    {team.pointsBet}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3 text-white font-semibold">
-                    {team.score}{" "}
-                    {team.rank <= 3 && (
-                      <span role="img" aria-label="magic wand">🪄</span>
-                    )}
-                  </td>
-                </tr>
-              ))} */}
             </tbody>
           </table>
         </div>
