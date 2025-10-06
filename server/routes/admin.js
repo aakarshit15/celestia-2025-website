@@ -58,4 +58,12 @@ router.post(
   adminController.subtractPointsByTeamId
 );
 
+// Admin route - add points by team ID
+router.post(
+  "/change-points",
+  authenticateAdmin,
+  logActivity("SUBTRACT_POINTS"),
+  adminController.changePointsByTeamId
+);
+
 export default router;

@@ -12,6 +12,7 @@ export const assignPoints = async (req, res) => {
     }
 
     const participant = await Participant.findOne({ teamId });
+    console.log("Participant found:", participant);
     if (!participant) {
       return res.status(404).json(formatResponse(null, "Team not found", 404));
     }
@@ -37,7 +38,10 @@ export const assignPoints = async (req, res) => {
     await participant.save();
 
     const timesCompleted = participant.gameProgress.filter(
-      (progress) => progress.gameId.toString() === gameId
+      (progress) => {
+        console.log("Checking progress:", progress.gameId);
+        progress.gameId.toString() === gameId
+      }
     ).length;
 
     res.json(

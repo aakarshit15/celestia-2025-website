@@ -1,4 +1,4 @@
-import { Admin,Participant } from "../models/index.js";
+import { Admin, Participant } from "../models/index.js";
 import { formatResponse, handleError } from "../utils/helpers.js";
 import jwt from "jsonwebtoken";
 
@@ -437,23 +437,26 @@ export const subtractPointsByQR = async (req, res) => {
 export const subtractPointsByTeamId = async (req, res) => {
   try {
     const { teamId, points, reason } = req.body;
+    console.log("Subtract Points Request:", { teamId, points, reason });
 
     if (!teamId || !points) {
       return res
         .status(400)
         .json(formatResponse(null, "Team ID and points are required", 400));
     }
+    console.log("After team and points check");
 
-    if (points <= 0) {
-      return res
-        .status(400)
-        .json(formatResponse(null, "Points must be greater than 0", 400));
-    }
+    // if (points <= 0) {
+    //   return res
+    //     .status(400)
+    //     .json(formatResponse(null, "Points must be greater than 0", 400));
+    // }
 
     const participant = await Participant.findOne({ teamId: parseInt(teamId) });
     if (!participant) {
       return res.status(404).json(formatResponse(null, "Team not found", 404));
     }
+    console.log("After participant check");
 
     // Check if team has enough points
     if (participant.totalPoints < points) {
@@ -467,6 +470,7 @@ export const subtractPointsByTeamId = async (req, res) => {
           )
         );
     }
+    console.log("[LOGS] After total points check");
 
     // Create a penalty record in gameProgress with negative points
     participant.gameProgress.push({
@@ -487,6 +491,16 @@ export const subtractPointsByTeamId = async (req, res) => {
     participant.totalPoints -= points;
     await participant.save();
 
+    console.log("[LOGS] After participant save");
+    console.log("[LOGS] sample response", {
+      teamId: participant.teamId,
+      teamName: participant.teamName,
+      pointsSubtracted: points,
+      newTotalPoints: participant.totalPoints,
+      reason: reason || "Points deducted by admin",
+      deductedBy: req.adminName,
+      timestamp: new Date(),
+    });
     res.json(
       formatResponse(
         {
@@ -499,6 +513,86 @@ export const subtractPointsByTeamId = async (req, res) => {
           timestamp: new Date(),
         },
         `${points} points deducted successfully by ${req.adminName}`
+      )
+    );
+  } catch (error) {
+    handleError(error, res);
+  }
+};
+
+export const changePointsByTeamId = async (req, res) => {
+  try {
+    const { teamId, points, reason } = req.body;
+    console.log("Points Change Request:", { teamId, points, reason });
+
+    if (!teamId || points === undefined || points === null) {
+      return res
+        .status(400)
+        .json(formatResponse(null, "Team ID and points are required", 400));
+    }
+    console.log("After team and points check");
+
+    const participant = await Participant.findOne({ teamId: parseInt(teamId) });
+    if (!participant) {
+      return res.status(404).json(formatResponse(null, "Team not found", 404));
+    }
+    console.log("After participant check");
+
+    // Check if team has enough points
+    if (participant.totalPoints < points) {
+      return res
+        .status(400)
+        .json(
+          formatResponse(
+            null,
+            `Insufficient points. Team has ${participant.totalPoints} points, cannot subtract ${points}`,
+            400
+          )
+        );
+    }
+    console.log("[LOGS] After total points check");
+
+    // Create a penalty record in gameProgress with negative points
+    participant.gameProgress.push({
+      gameId: null, // No specific game for penalty
+      points: points,
+      assignedBy: {
+        adminId: req.adminId,
+        adminName: req.adminName,
+        adminEmail: req.adminEmail,
+      },
+      penalty: {
+        reason: reason || "Points changed by admin",
+        isDeduction: true,
+      },
+    });
+
+    // Add points to total
+    participant.totalPoints += points;
+    await participant.save();
+
+    console.log("[LOGS] After participant save");
+    console.log("[LOGS] sample response", {
+      teamId: participant.teamId,
+      teamName: participant.teamName,
+      pointsSubtracted: points,
+      newTotalPoints: participant.totalPoints,
+      reason: reason || "Points chaged by admin",
+      deductedBy: req.adminName,
+      timestamp: new Date(),
+    });
+    res.json(
+      formatResponse(
+        {
+          teamId: participant.teamId,
+          teamName: participant.teamName,
+          pointsSubtracted: points,
+          newTotalPoints: participant.totalPoints,
+          reason: reason || "Points chaneg by admin",
+          deductedBy: req.adminName,
+          timestamp: new Date(),
+        },
+        `${points} points changed successfully by ${req.adminName}`
       )
     );
   } catch (error) {

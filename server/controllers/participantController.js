@@ -112,7 +112,6 @@ export const getLeaderboard = async (req, res) => {
     const leaderboard = await Participant.find()
       .select("teamName teamSize pointsBet totalPoints")
       .sort({ totalPoints: -1 })
-      .limit(10);
 
     res.json(formatResponse(leaderboard, "Leaderboard retrieved successfully"));
   } catch (error) {
