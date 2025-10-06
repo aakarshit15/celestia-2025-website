@@ -3,17 +3,19 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import genie from "../assets/genie.png";
 
-const Button = ({ textBefore, textAfter, to, fullSlide }) => {
+const Button = ({ textBefore, textAfter, onClick, fullSlide }) => {
   return (
     // Passing the fullSlide prop for dynamic hover adjustment
     <StyledWrapper $fullSlide={fullSlide}>
-      <Link to={to}>
-        <button>
+      {/* <Link to={to}> */}
+      <button onClick={onClick}>
+        {/* <button> */}
           <img src={genie} alt="genie" className="genie" />
           <span className="text-before">{textBefore}</span>
           <span className="text-after">{textAfter}</span>
-        </button>
-      </Link>
+        {/* </button> */}
+      </button>
+      {/* </Link> */}
     </StyledWrapper>
   );
 };
@@ -21,11 +23,11 @@ const Button = ({ textBefore, textAfter, to, fullSlide }) => {
 // Define responsive sizes for the genie slide
 // Use a function to calculate the slide distance based on screen size
 const getGenieSlideDistance = (props) => {
-    // Default/Large screens: Use a larger slide distance
-    const baseDistance = props.$fullSlide ? 170 : 140; 
-    
-    // Mobile screens: Use a smaller slide distance
-    return `@media (max-width: 640px) {
+  // Default/Large screens: Use a larger slide distance
+  const baseDistance = props.$fullSlide ? 170 : 140;
+
+  // Mobile screens: Use a smaller slide distance
+  return `@media (max-width: 640px) {
         transform: translateX(${props.$fullSlide ? '120px' : '90px'});
     }`;
 };

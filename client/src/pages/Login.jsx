@@ -1,12 +1,19 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Button from "./Button";
 import regi from "../assets/regi.png";
 import carpet from "../assets/carpet.png";
+import { participantLogin } from "../apis/user.api";
+import { toast } from "react-toastify";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const Login = () => {
   const [teamName, setTeamName] = useState("");
   const [teamID, setTeamID] = useState("");
+
+  const navigate = useNavigate();
 
   const handleCreateTeam = () => {
     alert(`Team Created!\nName: ${teamName}\nID: ${teamID}`);
@@ -35,8 +42,8 @@ const Login = () => {
   const slideInTransitionProps = {
     initial: { opacity: 0, x: -300 },
     animate: { opacity: 1, x: 0 },
-    transition: { 
-      ...commonTransition, 
+    transition: {
+      ...commonTransition,
       delay: APPEARANCE_DELAY + 0.2,
       duration: DURATION + 1.0,
     },
@@ -46,7 +53,7 @@ const Login = () => {
     initial: { opacity: 0 },
     animate: { opacity: 1 },
     transition: {
-      delay: dropInTransitionProps.transition.delay, 
+      delay: dropInTransitionProps.transition.delay,
       duration: 0.5,
       ease: smoothEase,
     },
@@ -60,20 +67,20 @@ const Login = () => {
   const gap = 40;
 
   // Primary Color: Base Gold
-  const primaryColor = "#d4af37"; 
+  const primaryColor = "#d4af37";
   // Secondary Color: DARK BLUE (Text Color & Button BG)
-  const secondaryColor = "#023A5F"; 
+  const secondaryColor = "#023A5F";
 
   // SHADES
   // Login Box BG: Lighter Gold
-  const boxBgColor = "#e0b95b"; 
+  const boxBgColor = "#e0b95b";
   // Input BG: Lightest Gold
-  const inputBgColor = "#f0d588"; 
-  
+  const inputBgColor = "#f0d588";
+
   // Button Text/Outline Color (Must match Box BG color)
-  const buttonTextColor = boxBgColor; 
+  const buttonTextColor = boxBgColor;
   // Button BG Color (Must match Title Text color)
-  const buttonBgColor = secondaryColor; 
+  const buttonBgColor = secondaryColor;
 
   // Helper function to calculate carpet right position
   const calculateCarpetRightPosition = () => {
@@ -86,7 +93,7 @@ const Login = () => {
     top: "17%",
     transform: "translateY(-50%)",
   };
-  
+
   // Tailwind utility class for inputs
   const inputClass = `
     px-4 py-3 
@@ -106,6 +113,28 @@ const Login = () => {
     // you will need to modify the Button.jsx file instead of passing styles here.
   };
 
+  const handleLogin = async () => {
+    console.log("handleLogin clicked");
+    try {
+      const data = {
+        teamId: teamID,
+        teamName: teamName,
+      }
+      const response = await axios.post(participantLogin, data);
+      console.log("Participant login response:", response.data);
+      Cookies.set("teamId", response.data.data.teamId);
+      toast.success("Login Successful");
+      setTimeout(() => {
+        navigate('/leaderboard')
+      }, 2000)
+    }
+    catch (error) {
+      console.log("Error in participant login:", error);
+      toast.error("Login failed. Please check your Team Name and ID.");
+      return;
+    }
+  }
+
   return (
     <div
       className="h-screen w-screen flex flex-col items-center justify-start bg-cover bg-center relative pt-16 overflow-hidden"
@@ -114,12 +143,13 @@ const Login = () => {
       {/* Back button (Updated to use the new color logic) */}
       <motion.div className="absolute top-4 right-4" {...backButtonTransitionProps}>
         {/* For the Back button, we'll use a simpler version, Gold text on Dark Blue background */}
-        <Button 
-          textBefore="Back" 
-          textAfter="Back" 
-          to="/"
+        <Button
+          textBefore="Back"
+          textAfter="Back"
+          // to="/"
+          onClick={() => navigate('/leaderboard')}
           // Passing custom styles to ensure the color swap is applied
-          style={{ 
+          style={{
             backgroundColor: secondaryColor,
             color: primaryColor,
             borderColor: primaryColor
@@ -146,7 +176,7 @@ const Login = () => {
           {...slideInTransitionProps}
         />
 
-        <style jsx>{`
+        <style>{`
           @media (min-width: 1024px) {
             .carpet-lg-size {
               width: ${lgCarpetWidth}px !important;
@@ -174,14 +204,14 @@ const Login = () => {
             will-change-transform
             z-20
           "
-          style={{ 
+          style={{
             backgroundColor: boxBgColor, // LIGHTER GOLD
             borderColor: secondaryColor // Dark Blue Border
           }}
           {...dropInTransitionProps}
         >
           {/* Title - DARK BLUE TEXT */}
-          <h2 
+          <h2
             className="text-3xl font-extrabold mb-4 font-[Cinzel Decorative, serif] whitespace-nowrap"
             style={{ color: secondaryColor }}
           >
@@ -193,7 +223,7 @@ const Login = () => {
             type="text"
             placeholder="Team Name"
             className={inputClass}
-            style={{ 
+            style={{
               backgroundColor: inputBgColor, // LIGHTEST GOLD
               borderColor: secondaryColor,
               color: secondaryColor, // Dark Blue Text
@@ -207,7 +237,7 @@ const Login = () => {
             type="text"
             placeholder="Team ID"
             className={inputClass}
-            style={{ 
+            style={{
               backgroundColor: inputBgColor, // LIGHTEST GOLD
               borderColor: secondaryColor,
               color: secondaryColor, // Dark Blue Text
@@ -217,12 +247,12 @@ const Login = () => {
           />
 
           {/* Create Team Button - DARK BLUE BG, LIGHTER GOLD TEXT/OUTLINE */}
-          <div> 
+          <div>
             <Button
               textBefore="Login"
               textAfter="Team"
-              onClick={handleCreateTeam}
-              to="#"
+              onClick={handleLogin}
+              // to="#"
               style={customButtonStyle}
             />
           </div>

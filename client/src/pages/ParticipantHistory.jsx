@@ -6,6 +6,7 @@ import genie from "../assets/genie.png"; // <-- Genie Image
 import axios from "axios";
 import Cookies from "js-cookie";
 import { teamProgress } from "../apis/leaderboard.api";
+import { useNavigate } from "react-router-dom";
 
 // Animation settings
 const HEADER_DURATION = 0.8;
@@ -26,22 +27,28 @@ const ParticipantHistory = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [teamData, setTeamData] = useState("");
 
+  const navigate = useNavigate();
+
+  const fetchParticipantHistory = async () => {
+    console.log("In participant history");
+    try {
+      const teamId = Cookies.get("teamId");
+      console.log("TeamId: ", teamId)
+
+      const response = await axios.get(`${teamProgress}/${teamId}`);
+      console.log("Participant history response:", response.data);
+
+      setParticipantData(response.data.data.gameStatistics);
+      setTableData(response.data.data.gameStatistics);
+      setTeamData(response.data.data);
+      // setTotalPoints(response.data.data.totalPoints);
+      // console.log("Team Data:", response.data.data.teamName);
+      // setTableData(res.data.history);
+    } catch (error) {
+      console.error("Error fetching participant history:", error);
+    }
+  };
   useEffect(() => {
-    const fetchParticipantHistory = async () => {
-      try {
-        const teamId = Cookies.get("teamId");
-        const response = await axios.get(`${teamProgress}/${teamId}`);
-        console.log("Participant history response:", response.data);
-        setParticipantData(response.data.data.gameStatistics);
-        setTableData(response.data.data.gameStatistics);
-        // setTotalPoints(response.data.data.totalPoints);
-        setTeamData(response.data.data);
-        // console.log("Team Data:", response.data.data.teamName);
-        // setTableData(res.data.history);
-      } catch (error) {
-        console.error("Error fetching participant history:", error);
-      }
-    };
     fetchParticipantHistory();
   }, []);
 
@@ -65,7 +72,7 @@ const ParticipantHistory = () => {
           ease: HEADER_EASING,
         }}
       >
-        <Button textBefore="Back" textAfter="Back" to="/leaderboard" />
+        <Button textBefore="Back" textAfter="Back" onClick={() => navigate('/leaderboard')} />
       </motion.div>
 
       {/* Top banner */}

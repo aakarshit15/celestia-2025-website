@@ -5,6 +5,8 @@ import genie from "../assets/genie.png"; // <-- Genie Image
 import { motion } from "framer-motion"; // <-- Import motion for animations
 import { getLeaderboard } from "../apis/leaderboard.api";
 import axios from "axios";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 // Animation constants
 const HEADER_DURATION = 0.8;
@@ -22,6 +24,18 @@ const Leaderboard = () => {
   const filteredLeaderboard = leaderboard.filter((team) =>
     team.teamName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const navigate = useNavigate();
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = Cookies.get("teamId");
+    if (token) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -92,7 +106,15 @@ const Leaderboard = () => {
           ease: HEADER_EASING
         }}
       >
-        <Button textBefore="Back" textAfter="Back" to="/" />
+        {loggedIn && (
+          <Button textBefore="Team Progress" textAfter="Team Progress" onClick={() => navigate('/teamprogress')}
+          />
+        )}
+        {!loggedIn && (
+          <Button textBefore="Login" textAfter="Login" onClick={() => navigate('/login')}
+          />
+        )}
+        {/* <Button textBefore="Back" textAfter="Back" onClick={() => navigate('/leaderboard')} /> */}
       </motion.div>
 
       {/* Top banner - Ensures ample space above and below */}
