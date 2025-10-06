@@ -16,6 +16,7 @@ import AdminLogin from "./pages/AdminLogin.jsx";
 import CamelAuction from "./pages/CamelAuction.jsx";
 import ParticipantHistory from "./pages/ParticipantHistory.jsx";
 import Cookies from "js-cookie";
+import Figma from "./components/Figma.jsx";
 
 // Define the appearance timing
 const APPEARANCE_DELAY = 1.0;
@@ -131,14 +132,13 @@ function Home() {
         </div>
 
         {/* Leaderboard Button - Uses simple fade-in */}
-        <motion.div
+        {/* <motion.div
           className="mt-10 pointer-events-auto"
           {...entranceTransitionProps}
         >
-          {/* THIS BUTTON HAS THE fullSlide PROP SET TO TRUE */}
           <Button textBefore="View" textAfter="Leaderboard" onClick={() => navigate('/leaderboard')}
             fullSlide={true} />
-        </motion.div>
+        </motion.div> */}
 
         {/* SUBHEADING IMAGE - Uses simple fade-in */}
         <motion.div
@@ -177,7 +177,7 @@ function Home() {
 export default function App() {
   return (
     <>
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}
@@ -188,7 +188,7 @@ export default function App() {
         draggable
         pauseOnHover
         theme="colored"
-      />
+      /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
@@ -196,6 +196,7 @@ export default function App() {
         <Route path="/teamprogress" element={<ParticipantHistory />} />
         <Route path="/games/simon_says" element={<Simon_says />} />
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/figma" element={<Figma />}></Route>
         <Route
           path="/admin/register"
           element={
