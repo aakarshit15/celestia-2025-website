@@ -87,7 +87,28 @@ export const getParticipantByTeamId = async (req, res) => {
       return res.status(404).json(formatResponse(null, "Team not found", 404));
     }
 
-    res.json(formatResponse(participant, "Participant retrieved successfully"));
+    // Get leaderboard position
+    const leaderboard = await Participant.find()
+      .select("teamId totalPoints")
+      .sort({ totalPoints: -1 });
+
+    const leaderboardPosition =
+      leaderboard.findIndex((team) => team.teamId === participant.teamId) + 1;
+    const totalTeams = leaderboard.length;
+
+    // Add leaderboard position to response
+    const participantWithPosition = {
+      ...participant.toObject(),
+      leaderboardPosition,
+      totalTeams,
+    };
+
+    res.json(
+      formatResponse(
+        participantWithPosition,
+        "Participant retrieved successfully"
+      )
+    );
   } catch (error) {
     handleError(error, res);
   }
@@ -111,7 +132,7 @@ export const getLeaderboard = async (req, res) => {
   try {
     const leaderboard = await Participant.find()
       .select("teamName teamSize pointsBet totalPoints teamId")
-      .sort({ totalPoints: -1 })
+      .sort({ totalPoints: -1 });
 
     res.json(formatResponse(leaderboard, "Leaderboard retrieved successfully"));
   } catch (error) {
