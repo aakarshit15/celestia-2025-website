@@ -7,6 +7,9 @@
 body {
     font-family: 'Georgia', serif;
     transition: background 0.3s ease;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 
 body.game-over-flash {
@@ -14,15 +17,55 @@ body.game-over-flash {
 }
 
 .game-container {
-    min-height: 100vh;
-    background: linear-gradient(to bottom, #312e81, #581c87, #831843);
+    width: 100vw;
+    height: 100vh;
+    background: 
+        url('/image.png') center center/cover no-repeat fixed,
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.4) 100%);
+    background-size: cover;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Create mosque silhouette using CSS */
+.game-container::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: 
+        /* Mosque domes and minarets */
+        radial-gradient(ellipse 40px 30px at 15% 90%, rgba(0, 0, 0, 0.8) 0%, transparent 70%),
+        radial-gradient(ellipse 60px 45px at 35% 85%, rgba(0, 0, 0, 0.8) 0%, transparent 70%),
+        radial-gradient(ellipse 80px 60px at 55% 80%, rgba(0, 0, 0, 0.8) 0%, transparent 70%),
+        radial-gradient(ellipse 50px 35px at 75% 88%, rgba(0, 0, 0, 0.8) 0%, transparent 70%),
+        radial-gradient(ellipse 35px 25px at 90% 92%, rgba(0, 0, 0, 0.8) 0%, transparent 70%),
+        /* Base structure */
+        linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 60%, transparent 100%);
+    z-index: 1;
+}
+
+/* Create crescent moon */
+.game-container::after {
+    content: '🌙';
+    position: absolute;
+    top: 10%;
+    right: 15%;
+    font-size: 48px;
+    opacity: 0.9;
+    z-index: 2;
+    animation: float 4s ease-in-out infinite;
 }
 
 .stars {
@@ -40,15 +83,16 @@ body.game-over-flash {
 }
 
 @keyframes twinkle {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.4; }
 }
 
 .decoration {
     position: absolute;
     font-size: 60px;
-    opacity: 0.2;
+    opacity: 0.4;
     animation: float 3s ease-in-out infinite;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
 }
 
 .decoration.top-left {
@@ -200,6 +244,8 @@ h2 {
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     max-width: 600px;
+    margin: 0 auto;
+    justify-items: center;
     z-index: 10;
 }
 
@@ -289,19 +335,171 @@ h2 {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    h1 { font-size: 40px; }
-    h2 { font-size: 22px; }
-    .gem-btn { width: 90px; height: 90px; }
-    .game-board { gap: 15px; }
-    .gem-icon { font-size: 35px; }
-    .decoration { font-size: 40px; }
+    .game-container {
+        padding: 0;
+    }
+    
+    h1 { 
+        font-size: 36px; 
+        margin-bottom: 15px;
+    }
+    
+    h2 { 
+        font-size: 20px; 
+        margin-bottom: 8px;
+    }
+    
+    .header {
+        margin-bottom: 25px;
+    }
+    
+    .gem-btn { 
+        width: 90px; 
+        height: 90px; 
+    }
+    
+    .game-board { 
+        gap: 12px; 
+        max-width: 320px;
+        margin: 0 auto;
+        justify-items: center;
+    }
+    
+    .gem-icon { 
+        font-size: 32px; 
+    }
+    
+    .decoration { 
+        font-size: 35px; 
+    }
+    
+    .level-display {
+        margin-top: 15px;
+    }
+    
+    .footer {
+        margin-top: 20px;
+    }
 }
 
 @media (max-width: 480px) {
-    h1 { font-size: 32px; }
-    .gem-btn { width: 70px; height: 70px; }
-    .game-board { gap: 10px; }
-    .gem-icon { font-size: 25px; }
-    .start-message { font-size: 16px; }
-    .level-number { font-size: 28px; }
+    .game-container {
+        padding: 0;
+        justify-content: flex-start;
+        padding-top: 10px;
+    }
+    
+    h1 { 
+        font-size: 28px; 
+        margin-bottom: 10px;
+    }
+    
+    h2 { 
+        font-size: 18px; 
+        margin-bottom: 5px;
+    }
+    
+    .header {
+        margin-bottom: 20px;
+    }
+    
+    .gem-btn { 
+        width: 70px; 
+        height: 70px; 
+    }
+    
+    .game-board { 
+        gap: 8px; 
+        max-width: 240px;
+        margin: 0 auto;
+        justify-items: center;
+    }
+    
+    .gem-icon { 
+        font-size: 24px; 
+    }
+    
+    .start-message { 
+        font-size: 16px; 
+        margin-top: 15px;
+    }
+    
+    .level-number { 
+        font-size: 24px; 
+    }
+    
+    .level-subtitle {
+        font-size: 16px;
+        margin-top: 8px;
+    }
+    
+    .decoration { 
+        font-size: 30px; 
+    }
+    
+    .decoration.top-left {
+        top: 10px;
+        left: 10px;
+    }
+    
+    .decoration.bottom-right {
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .footer {
+        margin-top: 15px;
+        font-size: 12px;
+    }
+    
+    .start-btn {
+        padding: 12px 25px;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+    
+    .restart-btn {
+        padding: 12px 30px;
+        font-size: 16px;
+    }
+    
+    .game-over-box {
+        padding: 20px;
+        margin-top: 15px;
+    }
+    
+    .game-over-title {
+        font-size: 22px;
+    }
+    
+    .game-over-score {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 360px) {
+    .game-container {
+        padding: 0;
+        padding-top: 10px;
+    }
+    
+    h1 { 
+        font-size: 24px; 
+    }
+    
+    .gem-btn { 
+        width: 60px; 
+        height: 60px; 
+    }
+    
+    .game-board { 
+        gap: 6px; 
+        max-width: 200px;
+        margin: 0 auto;
+        justify-items: center;
+    }
+    
+    .gem-icon { 
+        font-size: 20px; 
+    }
 }
