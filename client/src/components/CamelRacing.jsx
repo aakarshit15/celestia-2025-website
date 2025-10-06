@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { Trophy, Hash } from "lucide-react";
+import { subtractPoints, changePoints } from "../apis/user.api";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { toast } from 'react-toastify';
 
 const CamelRacing = () => {
   const [camelBets, setCamelBets] = useState([
@@ -25,15 +29,15 @@ const CamelRacing = () => {
     setCamelBets(updated);
   };
 
-  const calculatePoints = () => {
+  const calculatePoints = async () => {
     const points = [];
 
     camelBets.forEach((camel, i) => {
       const camelNum = i + 1;
-      let multiplier = 0;
-      if (camelNum === Number(winners.first)) multiplier = 3;
-      else if (camelNum === Number(winners.second)) multiplier = 2;
-      else if (camelNum === Number(winners.third)) multiplier = 1;
+      let multiplier = -1;
+      if (camelNum === Number(winners.first)) multiplier = 2;
+      else if (camelNum === Number(winners.second)) multiplier = 1;
+      else if (camelNum === Number(winners.third)) multiplier = 0;
 
       camel.teams.forEach((t) => {
         points.push({
@@ -44,6 +48,57 @@ const CamelRacing = () => {
     });
 
     setFinalPoints(points);
+
+    try {
+      const token = Cookies.get('token');
+
+      // Run all API calls in parallel
+      // const responses = await Promise.all(
+      //     points.map((p) =>
+      //         axios.post(changePoints, {
+      //             teamId: p.teamCode,
+      //             points: p.points
+      //         }, {
+      //             headers: {
+      //                 'Authorization': `Bearer ${token}`,
+      //                 'Content-Type': 'application/json'
+      //             }
+      //         })
+      //     )
+      // );
+
+      for (const p of points) {
+        if (p.points !== 0) { // only call API if points != 0
+          try {
+            const response = await axios.post(
+              changePoints,
+              {
+                teamId: p.teamCode,
+                points: p.points,
+                reason: "Points changed by admin via Auction Game",
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            console.log(`Points updated for ${p.teamCode}:`, response.data);
+          } catch (error) {
+            console.error(`Error updating points for ${p.teamCode}:`, error);
+          }
+        } else {
+          console.log(`Skipped ${p.teamCode} (0 points)`);
+        }
+      }
+
+      // console.log("All teams updated:", responses);
+      toast.success("All points successfully updated!");
+    } catch (error) {
+      console.error("Error updating points:", error);
+      toast.error("Some error occurred while updating points.");
+    }
   };
 
   return (
