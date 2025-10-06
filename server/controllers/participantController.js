@@ -110,7 +110,7 @@ export const getAllParticipants = async (req, res) => {
 export const getLeaderboard = async (req, res) => {
   try {
     const leaderboard = await Participant.find()
-      .select("teamName teamSize pointsBet totalPoints")
+      .select("teamName teamSize pointsBet totalPoints teamId")
       .sort({ totalPoints: -1 })
 
     res.json(formatResponse(leaderboard, "Leaderboard retrieved successfully"));

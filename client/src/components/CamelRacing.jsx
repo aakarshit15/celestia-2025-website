@@ -75,6 +75,7 @@ const CamelRacing = () => {
               {
                 teamId: p.teamCode,
                 points: p.points,
+                reason: "Points changed by admin via Auction Game",
               },
               {
                 headers: {
