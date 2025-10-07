@@ -7,12 +7,15 @@ const FlappyBird = () => {
   const canvasRef = useRef(null);
   const [gameState, setGameState] = useState("start");
 
+  let gravityVar = 0.25;
+  let jumpVar = 8;
+
   // Bird properties
   const bird = useRef(200);
   const speed = useRef(0);
-  const gravity = useRef(0.5); // faster fall
-  const jump = useRef(-11); // stronger jump to balance gravity
-  const strongJump = -13; // stronger jump for higher score
+  const gravity = useRef(gravityVar); // faster fall
+  const jump = useRef(jumpVar); // stronger jump to balance gravity
+  const strongJump = -8; // stronger jump for higher score
 
   // Obstacles
   const obstacles = useRef([]);
@@ -238,7 +241,7 @@ const FlappyBird = () => {
         difficultyTimer.current++;
         if (difficultyTimer.current % 180 === 0) {
           if (pillarSpeed.current < 12) pillarSpeed.current += 0.25;
-          if (gravity.current < 1.3) gravity.current += 0.03;
+          // if (gravity.current < 1.3) gravity.current += 0.03;
           if (jump.current > -16) jump.current -= 0.3;
         }
 
@@ -348,8 +351,8 @@ const FlappyBird = () => {
       score.current = 0;
       obstacles.current = [];
       pillarSpeed.current = 3.5;
-      gravity.current = 0.5;
-      jump.current = -11;
+      gravity.current = gravityVar;
+      jump.current = -jumpVar;
       difficultyTimer.current = 0;
       showRestart.current = false;
       if (gameOverTimer.current) clearTimeout(gameOverTimer.current);
