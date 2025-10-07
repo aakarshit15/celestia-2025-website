@@ -178,7 +178,7 @@ function Home() {
 export default function App() {
   return (
     <>
-      {/* <ToastContainer
+      <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}
@@ -189,7 +189,7 @@ export default function App() {
         draggable
         pauseOnHover
         theme="colored"
-      /> */}
+      />
       {/* <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
