@@ -34,15 +34,15 @@ const Figma = () => {
       {/* Menu Button (always visible) */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="absolute top-5 right-5 z-200 text-[#ffe066]"
+        className="absolute top-5 right-5 z-200 text-[#ffda34]"
       >
         {sidebarOpen ? <X size={32} /> : <Menu size={32} />}
       </button>
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 right-0 h-full bg-[#000] border-l-2 border-[#ffe066]/40 
-        flex flex-col items-end text-[#ffe066] font-cinzel text-lg
+        className={`fixed top-0 right-0 h-full bg-[#000] border-l-2 border-[#ffda34]/40 
+        flex flex-col items-end text-[#ffda34] font-cinzel text-lg
         transform transition-transform duration-500 ease-in-out z-100 shadow-2xl
         ${sidebarOpen ? "translate-x-0" : "translate-x-full"} 
         w-64 px-6 py-20`}
@@ -56,7 +56,7 @@ const Figma = () => {
                 navigate(r.path);
               }}
               className="text-right px-3 py-2 border border-transparent rounded-full 
-                hover:text-black hover:bg-[#ffe066] hover:shadow-[0_0_15px_#ffe066] 
+                hover:text-black hover:bg-[#ffda34] hover:shadow-[0_0_15px_#ffda34] 
                 transition-all duration-300 ease-in-out"
             >
               {r.name}
@@ -75,19 +75,19 @@ const Figma = () => {
           DIVE DEEP INTO THE REALMS OF MAGIC, MYSTERY & SPLENDOR
         </div>
 
-        <div className="text-[66px] md:text-[80px] lg:text-[165px] font-black text-[#ffe066] mb-5">
+        <div className="text-[66px] md:text-[80px] lg:text-[165px] font-black text-[#ffda34] mb-5 drop-shadow-[0_0_8px_#ffda34]">
           CELESTIA
         </div>
-        <div className="text-3xl mb-16 !font-arabian">ARABIAN NIGHTS</div>
+        <div className="text-3xl mb-16 !font-arabian drop-shadow-[0_0_8px_#ffffff]">ARABIAN NIGHTS</div>
 
         {/* Main Button */}
         <button
-          className="relative px-10 py-3 text-lg md:text-xl font-semibold border-2 border-[#ffe066] 
-            text-[#ffe066] rounded-full overflow-hidden group transition duration-300 
-            hover:text-black hover:shadow-[0_0_25px_#ffe066]"
+          className="relative px-10 py-3 text-lg md:text-xl font-semibold bg-[#00000098]
+            border-2 border-[#ffda34] text-[#ffda34] rounded-full overflow-hidden cursor-pointer
+            group transition duration-300 hover:text-black hover:shadow-[0_0_25px_#ffda34]"
           onClick={() => navigate('/leaderboard')}
         >
-          <span className="absolute inset-0 bg-[#ffe066] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out"></span>
+          <span className="absolute inset-0 bg-[#ffda34] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-150 ease-out"></span>
           <span className="relative z-10">Enter the Realm</span>
         </button>
       </div>
