@@ -12,7 +12,7 @@ import "./App.css";
 import Simon_says from "./pages/games/simon_says/app.jsx";
 import WordleArabian from "./pages/games/wordle/wordle.jsx";
 import Scoring from "./pages/Scoring.jsx";
-import Register from "./pages/register.jsx";
+import Register from "./pages/Register.jsx";
 import AdminLogin from "./pages/AdminLogin.jsx";
 import CamelAuction from "./pages/CamelAuction.jsx";
 import ParticipantHistory from "./pages/ParticipantHistory.jsx";
