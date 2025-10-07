@@ -1,6 +1,8 @@
-import { Admin, Participant } from "../models/index.js";
+import { Admin, Participant, Game } from "../models/index.js";
 import { formatResponse, handleError } from "../utils/helpers.js";
 import jwt from "jsonwebtoken";
+// const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 // Admin Login
 export const loginAdmin = async (req, res) => {
@@ -522,10 +524,10 @@ export const subtractPointsByTeamId = async (req, res) => {
 
 export const changePointsByTeamId = async (req, res) => {
   try {
-    const { teamId, points, reason } = req.body;
+    const { gameId, teamId, points, reason } = req.body;
     console.log("Points Change Request:", { teamId, points, reason });
 
-    if (!teamId || points === undefined || points === null) {
+    if (!gameId || !teamId || points === undefined || points === null) {
       return res
         .status(400)
         .json(formatResponse(null, "Team ID and points are required", 400));
@@ -537,6 +539,14 @@ export const changePointsByTeamId = async (req, res) => {
       return res.status(404).json(formatResponse(null, "Team not found", 404));
     }
     console.log("After participant check");
+
+    // const game = await Game.findOne({ gameId });
+    // const game = await Game.findOne({ _id: mongoose.Types.ObjectId(gameId) });
+    const game = await Game.findById(gameId);
+    if (!game) {
+      return res.status(404).json(formatResponse(null, "Game not found", 404));
+    }
+    console.log("After game check");
 
     // Check if team has enough points
     if (participant.totalPoints < points) {
@@ -554,7 +564,7 @@ export const changePointsByTeamId = async (req, res) => {
 
     // Create a penalty record in gameProgress with negative points
     participant.gameProgress.push({
-      gameId: null, // No specific game for penalty
+      gameId: gameId, // No specific game for penalty
       points: points,
       assignedBy: {
         adminId: req.adminId,

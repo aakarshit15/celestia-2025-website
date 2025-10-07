@@ -26,6 +26,7 @@ const ParticipantHistory = () => {
   const [tableData, setTableData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [teamData, setTeamData] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const navigate = useNavigate();
 
@@ -33,7 +34,8 @@ const ParticipantHistory = () => {
     console.log("In participant history");
     try {
       const teamId = Cookies.get("teamId");
-      console.log("TeamId: ", teamId)
+      setLoggedIn(!!teamId);
+      console.log("TeamId: ", teamId);
 
       const response = await axios.get(`${teamProgress}/${teamId}`);
       console.log("Participant history response:", response.data);
@@ -48,6 +50,7 @@ const ParticipantHistory = () => {
       console.error("Error fetching participant history:", error);
     }
   };
+
   useEffect(() => {
     fetchParticipantHistory();
   }, []);
@@ -143,37 +146,47 @@ const ParticipantHistory = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredData.length === 0 ? (
+              {!loggedIn ? (
                 <tr>
                   <td
                     colSpan={5}
                     className="py-6 text-center text-[#ffe066] italic"
                   >
-                    No Game History Found
+                    Please Login First
                   </td>
                 </tr>
-              ) : (
-                filteredData.map((game, index) => (
-                  <tr
-                    key={index}
-                    className="border-b border-[#d4af37]/60 text-white hover:bg-[#3b2600]/40 transition"
-                  >
-                    <td className="px-3 py-3 border-r border-[#d4af37]/40">
-                      {index + 1}
+              ) :
+                filteredData.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="py-6 text-center text-[#ffe066] italic"
+                    >
+                      No Game History Found
                     </td>
-                    <td className="px-3 py-3 border-r border-[#d4af37]/40">
-                      {game.gameName}
-                    </td>
-                    <td className="px-3 py-3 border-r border-[#d4af37]/40">
-                      {game.gamePoints}
-                    </td>
-                    <td className="px-3 py-3 border-r border-[#d4af37]/40">
-                      {game.timesCompleted}
-                    </td>
-                    <td className="px-3 py-3">{game.totalPointsEarned}</td>
                   </tr>
-                ))
-              )}
+                ) : (
+                  filteredData.map((game, index) => (
+                    <tr
+                      key={index}
+                      className="border-b border-[#d4af37]/60 text-white hover:bg-[#3b2600]/40 transition"
+                    >
+                      <td className="px-3 py-3 border-r border-[#d4af37]/40">
+                        {index + 1}
+                      </td>
+                      <td className="px-3 py-3 border-r border-[#d4af37]/40">
+                        {game.gameName}
+                      </td>
+                      <td className="px-3 py-3 border-r border-[#d4af37]/40">
+                        {game.gamePoints === 1 ? '-' : game.gamePoints}
+                      </td>
+                      <td className="px-3 py-3 border-r border-[#d4af37]/40">
+                        {game.timesCompleted}
+                      </td>
+                      <td className="px-3 py-3">{game.totalPointsEarned}</td>
+                    </tr>
+                  ))
+                )}
             </tbody>
           </table>
         </div>

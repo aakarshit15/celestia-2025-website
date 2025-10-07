@@ -1,33 +1,98 @@
-import React from 'react'
-// import bgImg from "/figma/bg_img.png"
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import { Menu, X } from "lucide-react"; // menu icons
 
 const Figma = () => {
-  return (
-    <>
-        <div className="w-full h-screen bg-cover flex flex-col relative" style={{
-            backgroundImage: "url('/bg_img.jpg')"
-        }}>
-            <div className="absolute w-full h-full" 
-            style={{
-    background: 'radial-gradient(circle 10000px, #02020C42, #0A0400)'
-  }}
-            ></div>
-            <nav className="flex text-white justify-center lg:justify-end gap-10 py-5 md:text-xl lg:text-2xl lg:pr-20 z-10"
-                
-            >
-                <span className="home font-cinzel">Home</span>
-                <span className="leaderboard font-cinzel">Leaderboard</span>
-            </nav>
-            <div className='flex flex-col flex-grow justify-center items-center z-10'>
-                <main className='flex flex-col justify-center items-center text-white font-cinzel'>
-                    <div className="tag tracking-wider text-center md:text-xl lg:text-2xl">DIVE DEEP INTO THE REALMS OF MAGIC, MYSTERY & SPLENDOR</div>
-                    <div className="event-name text-[50px] md:text-[80px] lg:text-[165px] font-black">CELESTIA</div>
-                    <div className="theme text-3xl">ARABIAN NIGHTS</div>
-                </main>
-            </div>
-        </div>
-    </>
-  )
-}
+  const navigate = useNavigate();
+  const [loaded, setLoaded] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-export default Figma
+  useEffect(() => {
+    const timer = setTimeout(() => setLoaded(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const routes = [
+    { name: "Wordle", path: "/games/wordle" },
+    { name: "Simon Says", path: "/games/simon_says" },
+    { name: "Flappy Bird", path: "/games/flappy_bird" },
+  ];
+
+  return (
+    <div
+      className="w-full h-screen bg-cover flex flex-col relative overflow-hidden"
+      style={{ backgroundImage: "url('/bg_img.jpg')" }}
+    >
+      {/* Overlay */}
+      <div
+        className="absolute w-full h-full"
+        style={{
+          background: 'radial-gradient(circle 10000px, #02020C42, #0A0400)',
+        }}
+      ></div>
+
+      {/* Menu Button (always visible) */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="absolute top-5 right-5 z-200 text-[#ffe066]"
+      >
+        {sidebarOpen ? <X size={32} /> : <Menu size={32} />}
+      </button>
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 right-0 h-full bg-[#000] border-l-2 border-[#ffe066]/40 
+        flex flex-col items-end text-[#ffe066] font-cinzel text-lg
+        transform transition-transform duration-500 ease-in-out z-100 shadow-2xl
+        ${sidebarOpen ? "translate-x-0" : "translate-x-full"} 
+        w-64 px-6 py-20`}
+      >
+        <div className="flex flex-col gap-5 w-full">
+          {routes.map((r) => (
+            <button
+              key={r.name}
+              onClick={() => {
+                setSidebarOpen(false);
+                navigate(r.path);
+              }}
+              className="text-right px-3 py-2 border border-transparent rounded-full 
+                hover:text-black hover:bg-[#ffe066] hover:shadow-[0_0_15px_#ffe066] 
+                transition-all duration-300 ease-in-out"
+            >
+              {r.name}
+            </button>
+          ))}
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <div
+        className={`flex flex-col flex-grow justify-center items-center z-10 text-white font-cinzel text-center 
+          transform transition-all duration-1000 px-4
+          ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+      >
+        <div className="tracking-wider text-xl md:text-2xl lg:text-3xl mb-6 !font-arabian drop-shadow-[0_0_8px_#ffffff]">
+          DIVE DEEP INTO THE REALMS OF MAGIC, MYSTERY & SPLENDOR
+        </div>
+
+        <div className="text-[66px] md:text-[80px] lg:text-[165px] font-black text-[#ffe066] mb-5">
+          CELESTIA
+        </div>
+        <div className="text-3xl mb-16 !font-arabian">ARABIAN NIGHTS</div>
+
+        {/* Main Button */}
+        <button
+          className="relative px-10 py-3 text-lg md:text-xl font-semibold border-2 border-[#ffe066] 
+            text-[#ffe066] rounded-full overflow-hidden group transition duration-300 
+            hover:text-black hover:shadow-[0_0_25px_#ffe066]"
+          onClick={() => navigate('/leaderboard')}
+        >
+          <span className="absolute inset-0 bg-[#ffe066] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 ease-out"></span>
+          <span className="relative z-10">Enter the Realm</span>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Figma;

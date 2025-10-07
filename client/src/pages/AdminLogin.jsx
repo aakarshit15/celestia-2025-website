@@ -54,7 +54,7 @@ const AdminLogin = () => {
               <Lock className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-600" />
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Team Scoring Login
+              Admin Login
             </h2>
             <p className="mt-2 text-sm sm:text-base text-gray-600">
               Sign in to access the scoring system

@@ -45,11 +45,12 @@ const AuctionGame = () => {
       const token = Cookies.get('token');
 
       for (const p of points) {
-        if (p.points !== 0) { // only call API if points != 0
+        if (p.points !== 0) {
           try {
             const response = await axios.post(
               changePoints,
               {
+                gameId: "68e416481de29e0d724c5a57",
                 teamId: p.teamCode,
                 points: p.points,
                 reason: "Points changed by admin via Auction Game",

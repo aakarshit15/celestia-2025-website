@@ -30,6 +30,7 @@ const CamelRacing = () => {
   };
 
   const calculatePoints = async () => {
+    console.log("Calculating points");
     const points = [];
 
     camelBets.forEach((camel, i) => {
@@ -73,6 +74,7 @@ const CamelRacing = () => {
             const response = await axios.post(
               changePoints,
               {
+                gameId: "68e41103d62ef35da105ea07",
                 teamId: p.teamCode,
                 points: p.points,
                 reason: "Points changed by admin via Auction Game",
@@ -132,7 +134,7 @@ const CamelRacing = () => {
                 placeholder="Team Code"
               />
               <input
-                type="number"
+                type="text"
                 value={team.bet}
                 onChange={(e) =>
                   handleInputChange(camelIndex, teamIndex, "bet", e.target.value)
