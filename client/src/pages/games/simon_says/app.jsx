@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./arya.css";
+import "./app.css";
 import img1 from "../../../../src/assets/simon_says/arabianSym1.png";
 import img2 from "../../../../src/assets/simon_says/arabianSym2.png";
 import img3 from "../../../../src/assets/simon_says/arabianSym3.png";
@@ -298,12 +299,12 @@ const ArabianSimonGame = () => {
                   isFlashing === colors[index] ? "flash" : ""
                 } ${
                   isUserFlashing === colors[index] ? "user-flash" : ""
-                } p-5 bg-amber-700 rounded-xl `}
+                } p-5 bg-amber-700 rounded-xl`}
               >
                 <div className="gem-overlay"></div>
                 <div className="gem-pattern"></div>
                 <div className="gem-icon">
-                  <img src={symbol} alt={` Gem ${colors[index]}`} id="symbols" />
+                  <img src={symbol} alt={` Gem ${colors[index]}`} id="symbols" className="rounded-xl" />
                 </div>
               </button>
             ))}
