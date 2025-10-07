@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./wordle.css";
+import bgImg from "../../../assets/bgimage.png";
 
 const InfoIcon = () => (
   <svg
@@ -399,141 +399,86 @@ export default function WordleArabian() {
   };
 
   return (
-    <div className="arabian-container">
-      <div className="game-wrapper">
-        {/* Left Sidebar - Instructions */}
-        <aside className="sidebar left-sidebar">
-          <div className="sidebar-content">
+    <div
+      className="min-h-screen text-yellow-400 relative overflow-x-hidden bg-cover"
+      style={{ backgroundImage: `url('${bgImg}')` }}
+    >
+      <div className="absolute inset-0 bg-black/30 z-0"></div>
+
+      <div className="relative z-10 gap-5 mx-auto p-5 min-h-screen flex flex-row">
+        {/* Center - Game Area */}
+        <main className="flex-6 flex flex-col items-center justify-start px-2.5">
+          <div className="flex flex-row gap-7">
             <button
-              className="info-button-mobile"
+              className=" flex items-center justify-center gap-2 w-full max-w-[400px] mx-auto bg-yellow-400/20 border-2 border-yellow-400 text-yellow-400 py-2 px-5 rounded-xl text-base font-bold cursor-pointer shadow-[0_0_15px_rgba(255,215,0,0.3)] transition-all hover:bg-yellow-400/30 hover:-translate-y-0.5"
               onClick={() => setShowInstructions(!showInstructions)}
             >
               <InfoIcon /> How to Play
             </button>
-
-            <div className="instructions-sidebar">
-              <h2>🎮 How to Play</h2>
-              <p className="goal">
-                Guess the 5-letter Arabian word in 6 tries!
-              </p>
-
-              <div className="example-section">
-                <p>
-                  <strong>Color Guide:</strong>
-                </p>
-                <div className="example-row">
-                  <div className="example-tile correct">G</div>
-                  <span className="example-text">Correct spot</span>
-                </div>
-                <div className="example-row">
-                  <div className="example-tile present">A</div>
-                  <span className="example-text">Wrong spot</span>
-                </div>
-                <div className="example-row">
-                  <div className="example-tile absent">X</div>
-                  <span className="example-text">Not in word</span>
-                </div>
-              </div>
-
-              <div className="tips-section">
-                <p>
-                  <strong>💡 Scoring:</strong>
-                </p>
-                <ul>
-                  <li>🏆 1 try: 1600 pts + bonuses</li>
-                  <li>⭐ 2 tries: 800 pts</li>
-                  <li>👍 3 tries: 600 pts</li>
-                  <li>✨ Streak bonus: +50/streak</li>
-                  <li>⚠️ "Play Again" resets points!</li>
-                </ul>
-              </div>
-
-              <div className="tips-section">
-                <p>
-                  <strong>💫 Tips:</strong>
-                </p>
-                <ul>
-                  <li>Use keyboard or tap keys</li>
-                  <li>Press Enter to submit</li>
-                  <li>Arabian themed words! 🧞‍♂️</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </aside>
-
-        {/* Center - Game Area */}
-        <main className="game-area">
-          <button
-            className="info-button-mobile"
-            onClick={() => setShowInstructions(!showInstructions)}
-          >
-            <InfoIcon /> How to Play
-          </button>
-
-          <h1>🌙 Arabian Nights Wordle 🕌</h1>
-
-          {/* Mobile Points Display */}
-          <div className="mobile-points-display">
-            <div className="mobile-score">
-              💰 Score: <strong>{totalPoints}</strong>
-            </div>
-            <div className="mobile-streak">
-              🔥 Streak: <strong>{streak}</strong>
+            <div className="flex flex-col items-center gap-3">
+              {gameOver && (
+                <button
+                  onClick={continueGame}
+                  className="py-3 px-6 rounded-xl border-none text-base font-bold cursor-pointer transition-all bg-gradient-to-br from-[#00ff73] to-[#44ff00] text-black shadow-[0_0_15px_rgba(0,255,115,0.6)] hover:-translate-y-0.5 hover:shadow-[0_0_25px_rgba(0,255,115,0.8)]"
+                >
+                  Continue
+                </button>
+              )}
+              <button
+                onClick={resetGame}
+                className="py-3 px-6 rounded-xl border-none text-base font-bold cursor-pointer transition-all bg-gradient-to-br from-[#ffae00] to-[#ffd700] text-black shadow-[0_0_15px_rgba(255,215,0,0.6)] hover:-translate-y-0.5 hover:shadow-[0_0_25px_rgba(255,215,0,0.8)]"
+              >
+                Play Again
+              </button>
             </div>
           </div>
 
-          {/* Current Game Points */}
-          {currentPoints > 0 && (
-            <div className="points-earned">
-              <h3>💎 Points Earned: {currentPoints}</h3>
-              <div className="points-breakdown">
-                {pointsBreakdown.base > 0 && (
-                  <span>Base: {pointsBreakdown.base}</span>
-                )}
-                {pointsBreakdown.speed > 0 && (
-                  <span>Speed: +{pointsBreakdown.speed}</span>
-                )}
-                {pointsBreakdown.streak > 0 && (
-                  <span>Streak: +{pointsBreakdown.streak}</span>
-                )}
-                {pointsBreakdown.bonus > 0 && (
-                  <span>🏆 Perfect: +{pointsBreakdown.bonus}</span>
-                )}
-              </div>
+          <h1 className="my-8 lg:mt-4 lg:mb-2 text-3xl text-yellow-400 text-center">
+            🌙 Arabian Nights Wordle 🕌
+          </h1>
+
+          {message && (
+            <div className="bg-yellow-400/20 border-2 border-yellow-400 text-yellow-400 py-3 px-5 my-2.5 mb-5 rounded-xl font-bold text-lg shadow-[0_0_20px_rgba(255,215,0,0.5)] text-center whitespace-pre-line">
+              {message}
             </div>
           )}
 
-          {message && <div className="message">{message}</div>}
-
-          <div id="board">
+          <div className="grid grid-cols-5 gap-2 justify-center mx-auto mb-4">
             {board.map((row, rIdx) =>
               row.map((cell, cIdx) => (
-                <div key={`${rIdx}-${cIdx}`} className={`tile ${cell.status}`}>
+                <div
+                  key={`${rIdx}-${cIdx}`}
+                  className={`w-[70px] h-[70px] md:w-[60px] md:h-[60px] sm:w-[50px] sm:h-[50px] border-2 border-yellow-400 flex justify-center items-center text-3xl md:text-2xl sm:text-xl font-bold bg-black/60 text-white uppercase shadow-[0_0_10px_rgba(255,217,0,0.5)] transition-all rounded backdrop-blur-sm ${
+                    cell.status === "correct"
+                      ? "bg-gradient-to-br from-[#44ff00] to-[#00ff73] !text-black !border-emerald-400"
+                      : cell.status === "present"
+                      ? "bg-gradient-to-br from-[#d5f65c] to-[#a88d21] !text-white !border-[#d5f65c]"
+                      : cell.status === "absent"
+                      ? "bg-gray-700/90 !text-white !border-gray-600"
+                      : ""
+                  }`}
+                >
                   {cell.letter}
                 </div>
               ))
             )}
           </div>
 
-          <div className="button-group">
-            {gameOver && (
-              <button onClick={continueGame} className="continue-button">
-                Continue
-              </button>
-            )}
-            <button onClick={resetGame} className="reset-button-main">
-              Play Again
-            </button>
-          </div>
-
-          <div id="keyboard">
+          <div className="flex flex-col items-center gap-2">
             {rows.map((row, rowIdx) => (
-              <div key={rowIdx} className="kb-row">
+              <div key={rowIdx} className="flex justify-center gap-1.5">
                 {row.map((k, i) => (
                   <div
                     key={i}
-                    className={`key ${keyStatuses[k] || ""}`}
+                    className={`flex items-center justify-center w-8 lg:w-10 h-8 lg:h-10 px-2 bg-black/40 text-yellow-400 uppercase shadow-[0_0_10px_rgba(255,215,0,0.3)] border border-gray-300 rounded-md cursor-pointer select-none font-bold transition-all hover:bg-yellow-400/20 hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(255,215,0,0.6)] active:translate-y-0 active:bg-yellow-400/30 backdrop-blur-sm ${
+                      keyStatuses[k] === "correct"
+                        ? "!bg-gradient-to-br !from-[#44ff00] !to-[#00ff73] !text-black !border-emerald-400"
+                        : keyStatuses[k] === "present"
+                        ? "!bg-gradient-to-br !from-[#d5f65c] !to-[#a88d21] !text-white !border-[#d5f65c]"
+                        : keyStatuses[k] === "absent"
+                        ? "!bg-gray-700/80 !text-white !border-gray-600"
+                        : ""
+                    }`}
                     onClick={() => handleKey(k)}
                   >
                     {k}
@@ -543,167 +488,105 @@ export default function WordleArabian() {
             ))}
           </div>
 
-          <div className="bottom-info">
-            <p>🟢 Correct | 🟡 Wrong Place | ⚫ Not in Word</p>
+          <div className="lg:hidden text-center p-2.5 bg-black/50 rounded-xl mt-2.5">
+            <p className="text-yellow-400 text-sm m-0">
+              🟢 Correct | 🟡 Wrong Place | ⚫ Not in Word
+            </p>
           </div>
         </main>
-
-        {/* Right Sidebar - Stats & Points */}
-        <aside className="sidebar right-sidebar">
-          <div className="sidebar-content">
-            <div className="points-display">
-              <h3>💰 Total Score</h3>
-              <div className="total-points">{totalPoints}</div>
-              <div className="streak-display">
-                🔥 Streak: <strong>{streak}</strong>
-                {bestStreak > 0 && (
-                  <span className="best-streak"> (Best: {bestStreak})</span>
-                )}
-              </div>
-            </div>
-
-            <div className="stats-section">
-              <h3>📊 Game Stats</h3>
-              <div className="stat-item">
-                <span className="stat-label">Games Played:</span>
-                <span className="stat-value">{gamesPlayed}</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-label">Games Won:</span>
-                <span className="stat-value">{gamesWon}</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-label">Win Rate:</span>
-                <span className="stat-value">
-                  {gamesPlayed > 0
-                    ? Math.round((gamesWon / gamesPlayed) * 100)
-                    : 0}
-                  %
-                </span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-label">Current Row:</span>
-                <span className="stat-value">
-                  {currentRowIndex + 1} / {maxRows}
-                </span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-label">Letters Used:</span>
-                <span className="stat-value">
-                  {Object.keys(keyStatuses).length}
-                </span>
-              </div>
-            </div>
-
-            <div className="word-bank">
-              <h3>🏺 Scoring System</h3>
-              <div className="scoring-guide">
-                <div className="score-row">
-                  <span>1st try:</span>
-                  <span>1600 pts 🏆</span>
-                </div>
-                <div className="score-row">
-                  <span>2nd try:</span>
-                  <span>800 pts ⭐</span>
-                </div>
-                <div className="score-row">
-                  <span>3rd try:</span>
-                  <span>600 pts 👍</span>
-                </div>
-                <div className="score-row">
-                  <span>4th try:</span>
-                  <span>400 pts ✓</span>
-                </div>
-                <div className="score-row">
-                  <span>5th try:</span>
-                  <span>250 pts</span>
-                </div>
-                <div className="score-row">
-                  <span>6th try:</span>
-                  <span>100 pts</span>
-                </div>
-                <div className="bonus-info">
-                  <p>+ Streak Bonus: 50pts/win</p>
-                  <p>⚠️ Reset = Lose all points!</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
       </div>
 
       {/* Mobile Instructions Modal */}
       {showInstructions && (
         <div
-          className="instructions-modal"
+          className="fixed inset-0 bg-black/85 flex items-center justify-center z-[1000] p-5"
           onClick={() => setShowInstructions(false)}
         >
           <div
-            className="instructions-content"
+            className="bg-gradient-to-br from-[#1a0b2e] to-[#2d1b4e] border-4 border-yellow-400 rounded-2xl max-w-[500px] w-full max-h-[85vh] overflow-y-auto p-6 relative shadow-[0_0_30px_rgba(255,215,0,0.5)]"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="close-button"
+              className="absolute top-4 right-4 bg-red-500/20 border-2 border-red-400 text-red-400 w-9 h-9 rounded-full cursor-pointer text-xl flex items-center justify-center p-0 transition-all hover:bg-red-500/40 hover:rotate-90"
               onClick={() => setShowInstructions(false)}
             >
               ✕
             </button>
-            <h2>🎮 How to Play</h2>
-            <div className="instructions-text">
-              <p>
+            <h2 className="text-yellow-400 m-0 mb-5 text-2xl text-center">
+              🎮 How to Play
+            </h2>
+            <div className="text-yellow-400 text-left">
+              <p className="my-2.5 leading-relaxed text-sm">
                 <strong>Goal:</strong> Guess the 5-letter Arabian-themed word in
                 6 tries!
               </p>
 
-              <div className="example-section">
-                <p>
+              <div className="bg-black/30 p-4 rounded-xl my-4">
+                <p className="my-2.5 leading-relaxed text-sm text-center mb-5">
                   <strong>After each guess:</strong>
                 </p>
-                <div className="example-tiles">
-                  <div className="example-tile correct">G</div>
-                  <div className="example-tile">E</div>
-                  <div className="example-tile">N</div>
-                  <div className="example-tile">I</div>
-                  <div className="example-tile">E</div>
+                <div className="flex gap-1.5 my-2.5 justify-center">
+                  <div className="w-9 h-9 border-2 border-emerald-400 flex items-center justify-center font-bold text-lg bg-gradient-to-br from-[#44ff00] to-[#00ff73] text-black rounded">
+                    G
+                  </div>
+                  <div className="w-9 h-9 border-2 border-yellow-400 flex items-center justify-center font-bold text-lg bg-black/60 text-white rounded">
+                    E
+                  </div>
+                  <div className="w-9 h-9 border-2 border-yellow-400 flex items-center justify-center font-bold text-lg bg-black/60 text-white rounded">
+                    N
+                  </div>
+                  <div className="w-9 h-9 border-2 border-yellow-400 flex items-center justify-center font-bold text-lg bg-black/60 text-white rounded">
+                    I
+                  </div>
+                  <div className="w-9 h-9 border-2 border-yellow-400 flex items-center justify-center font-bold text-lg bg-black/60 text-white rounded">
+                    E
+                  </div>
                 </div>
-                <p className="example-desc">
+                <p className="text-sm my-1.5 mb-4 text-center">
                   🟢 <strong>Green:</strong> Correct position
                 </p>
 
-                <div className="example-tiles">
-                  <div className="example-tile">M</div>
-                  <div className="example-tile present">A</div>
-                  <div className="example-tile">G</div>
-                  <div className="example-tile">I</div>
-                  <div className="example-tile">C</div>
+                <div className="flex gap-1.5 my-2.5 justify-center">
+                  <div className="w-9 h-9 border-2 border-yellow-400 flex items-center justify-center font-bold text-lg bg-black/60 text-white rounded">
+                    M
+                  </div>
+                  <div className="w-9 h-9 border-2 border-[#d5f65c] flex items-center justify-center font-bold text-lg bg-gradient-to-br from-[#d5f65c] to-[#a88d21] text-white rounded">
+                    A
+                  </div>
+                  <div className="w-9 h-9 border-2 border-yellow-400 flex items-center justify-center font-bold text-lg bg-black/60 text-white rounded">
+                    G
+                  </div>
+                  <div className="w-9 h-9 border-2 border-yellow-400 flex items-center justify-center font-bold text-lg bg-black/60 text-white rounded">
+                    I
+                  </div>
+                  <div className="w-9 h-9 border-2 border-yellow-400 flex items-center justify-center font-bold text-lg bg-black/60 text-white rounded">
+                    C
+                  </div>
                 </div>
-                <p className="example-desc">
+                <p className="text-sm my-1.5 mb-4 text-center">
                   🟡 <strong>Yellow:</strong> Wrong position
                 </p>
 
-                <div className="example-tiles">
-                  <div className="example-tile">O</div>
-                  <div className="example-tile">A</div>
-                  <div className="example-tile">S</div>
-                  <div className="example-tile absent">I</div>
-                  <div className="example-tile">S</div>
+                <div className="flex gap-1.5 my-2.5 justify-center">
+                  <div className="w-9 h-9 border-2 border-yellow-400 flex items-center justify-center font-bold text-lg bg-black/60 text-white rounded">
+                    O
+                  </div>
+                  <div className="w-9 h-9 border-2 border-yellow-400 flex items-center justify-center font-bold text-lg bg-black/60 text-white rounded">
+                    A
+                  </div>
+                  <div className="w-9 h-9 border-2 border-yellow-400 flex items-center justify-center font-bold text-lg bg-black/60 text-white rounded">
+                    S
+                  </div>
+                  <div className="w-9 h-9 border-2 border-gray-600 flex items-center justify-center font-bold text-lg bg-gray-700/90 text-white rounded">
+                    I
+                  </div>
+                  <div className="w-9 h-9 border-2 border-yellow-400 flex items-center justify-center font-bold text-lg bg-black/60 text-white rounded">
+                    S
+                  </div>
                 </div>
-                <p className="example-desc">
+                <p className="text-sm my-1.5 mb-4 text-center">
                   ⚫ <strong>Gray:</strong> Not in word
                 </p>
-              </div>
-
-              <div className="tips-section">
-                <p>
-                  <strong>💎 Scoring:</strong>
-                </p>
-                <ul>
-                  <li>1 try: 1600 pts 🏆</li>
-                  <li>2 tries: 800 pts ⭐</li>
-                  <li>3 tries: 600 pts 👍</li>
-                  <li>Build streaks for bonuses!</li>
-                  <li>⚠️ "Play Again" resets all!</li>
-                </ul>
               </div>
             </div>
           </div>
