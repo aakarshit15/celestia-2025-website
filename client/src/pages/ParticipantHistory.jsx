@@ -178,7 +178,7 @@ const ParticipantHistory = () => {
                         {game.gameName}
                       </td>
                       <td className="px-3 py-3 border-r border-[#d4af37]/40">
-                        {game.gamePoints === 1 ? '-' : game.gamePoints}
+                        {game.gamePoints === 2 ? '-' : game.gamePoints}
                       </td>
                       <td className="px-3 py-3 border-r border-[#d4af37]/40">
                         {game.timesCompleted}
