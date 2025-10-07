@@ -34,16 +34,16 @@ const Figma = () => {
       {/* Menu Button (always visible) */}
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="absolute top-5 right-5 z-200 text-[#ffda34]"
+        className="absolute top-5 right-5 z-200 text-[#ffda34] cursor-pointer"
       >
         {sidebarOpen ? <X size={32} /> : <Menu size={32} />}
       </button>
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 right-0 h-full bg-[#000] border-l-2 border-[#ffda34]/40 
-        flex flex-col items-end text-[#ffda34] font-cinzel text-lg
-        transform transition-transform duration-500 ease-in-out z-100 shadow-2xl
+        className={`fixed top-0 right-0 h-full bg-[#000000]/50 border-l-2 border-[#ffda34]/40 
+        flex flex-col items-end text-[#ffda34] font-cinzel text-lg backdrop-blur-sm
+        transform transition-transform duration-300 ease-in-out z-100 shadow-2xl
         ${sidebarOpen ? "translate-x-0" : "translate-x-full"} 
         w-64 px-6 py-20`}
       >
@@ -55,9 +55,9 @@ const Figma = () => {
                 setSidebarOpen(false);
                 navigate(r.path);
               }}
-              className="text-right px-3 py-2 border border-transparent rounded-full 
+              className="text-center px-3 py-2 border border-transparent rounded-full 
                 hover:text-black hover:bg-[#ffda34] hover:shadow-[0_0_15px_#ffda34] 
-                transition-all duration-300 ease-in-out"
+                transition-all duration-150 ease-in-out cursor-pointer font-bold"
             >
               {r.name}
             </button>
