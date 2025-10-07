@@ -10,6 +10,7 @@ import Button from "./pages/Button";
 import "./index.css";
 import "./App.css";
 import Simon_says from "./pages/games/simon_says/app.jsx";
+import WordleArabian from "./pages/games/wordle/wordle.jsx";
 import Scoring from "./pages/Scoring.jsx";
 import Register from "./pages/register.jsx";
 import AdminLogin from "./pages/AdminLogin.jsx";
@@ -17,6 +18,7 @@ import CamelAuction from "./pages/CamelAuction.jsx";
 import ParticipantHistory from "./pages/ParticipantHistory.jsx";
 import Cookies from "js-cookie";
 import Figma from "./components/Figma.jsx";
+import FlappyBird from "./pages/games/flappy_bird/Flappybird.jsx";
 
 // Define the appearance timing
 const APPEARANCE_DELAY = 1.0;
@@ -188,7 +190,7 @@ export default function App() {
         pauseOnHover
         theme="colored"
       /> */}
-      <Routes>
+      {/* <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/login" element={<Login />} />
@@ -196,6 +198,44 @@ export default function App() {
         <Route path="/games/simon_says" element={<Simon_says />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/figma" element={<Figma />}></Route>
+        <Route
+          path="/admin/register"
+          element={
+            <ProtectedRoute
+              element={Register}
+              allowedRoles={["admin", "superadmin"]}
+            />
+          }
+        />
+        <Route
+          path="/admin/scoring"
+          element={
+            <ProtectedRoute
+              element={Scoring}
+              allowedRoles={["admin", "superadmin"]}
+            />
+          }
+        />
+        <Route
+          path="/admin/camelauction"
+          element={
+            <ProtectedRoute
+              element={CamelAuction}
+              allowedRoles={["admin", "superadmin"]}
+            />
+          }
+        />
+      </Routes> */}
+      <Routes>
+        <Route path="/" element={<Figma />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/teamprogress" element={<ParticipantHistory />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/figma" element={<Figma />}></Route>
+        <Route path="/games/wordle" element={<WordleArabian />} />
+        <Route path="/games/simon_says" element={<Simon_says />} />
+        <Route path="/games/flappy_bird" element={<FlappyBird />}></Route>
         <Route
           path="/admin/register"
           element={
