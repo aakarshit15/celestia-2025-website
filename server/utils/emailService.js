@@ -19,15 +19,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Verify transporter configuration
-transporter.verify(function (error, success) {
-  if (error) {
-    console.error("❌ Email transporter verification failed:", error);
-  } else {
-    console.log("✅ Email server is ready to send messages");
-  }
-});
-
 export const generateQRCode = async (teamId) => {
   try {
     const qrCodeData = JSON.stringify({ teamId });
