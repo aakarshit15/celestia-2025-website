@@ -448,7 +448,7 @@ export default function WordleArabian() {
               row.map((cell, cIdx) => (
                 <div
                   key={`${rIdx}-${cIdx}`}
-                  className={`w-[70px] h-[70px] md:w-[60px] md:h-[60px] sm:w-[50px] sm:h-[50px] border-2 border-yellow-400 flex justify-center items-center text-3xl md:text-2xl sm:text-xl font-bold bg-black/60 text-white uppercase shadow-[0_0_10px_rgba(255,217,0,0.5)] transition-all rounded backdrop-blur-sm ${
+                  className={`w-14 h-14 md:w-[60px] md:h-[60px] sm:w-[30px] sm:h-[30px] border-2 border-yellow-400 flex justify-center items-center text-3xl md:text-2xl sm:text-xl font-bold bg-black/60 text-white uppercase shadow-[0_0_10px_rgba(255,217,0,0.5)] transition-all rounded backdrop-blur-sm ${
                     cell.status === "correct"
                       ? "bg-gradient-to-br from-[#44ff00] to-[#00ff73] !text-black !border-emerald-400"
                       : cell.status === "present"
@@ -470,7 +470,7 @@ export default function WordleArabian() {
                 {row.map((k, i) => (
                   <div
                     key={i}
-                    className={`flex items-center justify-center w-8 lg:w-10 h-8 lg:h-10 px-2 bg-black/40 text-yellow-400 uppercase shadow-[0_0_10px_rgba(255,215,0,0.3)] border border-gray-300 rounded-md cursor-pointer select-none font-bold transition-all hover:bg-yellow-400/20 hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(255,215,0,0.6)] active:translate-y-0 active:bg-yellow-400/30 backdrop-blur-sm ${
+                    className={`flex items-center justify-center w-7 lg:w-10 h-8 lg:h-10 px-2 bg-black/40 text-yellow-400 uppercase shadow-[0_0_10px_rgba(255,215,0,0.3)] border border-gray-300 rounded-md cursor-pointer select-none font-bold transition-all hover:bg-yellow-400/20 hover:-translate-y-0.5 hover:shadow-[0_0_15px_rgba(255,215,0,0.6)] active:translate-y-0 active:bg-yellow-400/30 backdrop-blur-sm ${
                       keyStatuses[k] === "correct"
                         ? "!bg-gradient-to-br !from-[#44ff00] !to-[#00ff73] !text-black !border-emerald-400"
                         : keyStatuses[k] === "present"
