@@ -10,6 +10,7 @@ import img6 from "../../../../src/assets/simon_says/arabianSym6.png";
 import img7 from "../../../../src/assets/simon_says/arabianSym7.png";
 import img8 from "../../../../src/assets/simon_says/arabianSym8.png";
 import img9 from "../../../../src/assets/simon_says/arabianSym9.png";
+import HomeBtn from "../../../components/HomeBtn";
 
 const ArabianSimonGame = () => {
   const [gameSeq, setGameSeq] = useState([]);
@@ -246,7 +247,12 @@ const ArabianSimonGame = () => {
       {/* <div className="decoration top-left">🕌</div>
       <div className="decoration bottom-right">✨</div> */}
 
+      <HomeBtn />
+
       <div className="header flex flex-col justify-center items-center gap-8">
+        {/* dark overlay */}
+        <div className="absolute inset-0 bg-black/50 z-0" />
+
         <h1 className="text-5xl font-bold font-cinzel text-[#decd0c] text-center">
           Arabian Nights
         </h1>
@@ -304,7 +310,12 @@ const ArabianSimonGame = () => {
                 <div className="gem-overlay"></div>
                 <div className="gem-pattern"></div>
                 <div className="gem-icon">
-                  <img src={symbol} alt={` Gem ${colors[index]}`} id="symbols" className="rounded-xl" />
+                  <img
+                    src={symbol}
+                    alt={` Gem ${colors[index]}`}
+                    id="symbols"
+                    className="rounded-xl"
+                  />
                 </div>
               </button>
             ))}
