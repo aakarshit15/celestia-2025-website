@@ -8,9 +8,13 @@ import { toast } from "react-toastify";
 import { Trophy, Hash } from "lucide-react";
 import AdminBulk from "../components/AdminBulk";
 import AuctionGame from "../components/AuctionGame";
+import { addPoints } from "../apis/scoring.api";
+import { getAllGames } from "../apis/games.api";
 
 const AdminBulkUpdate = () => {
-  const [selectedGame, setSelectedGame] = useState("camel");
+  const [selectedGame, setSelectedGame] = useState();
+  const [games, setGames] = useState([]);
+  
 
   const handleSubmit = async (teams) => {
     let updatedTeams = [...teams];
@@ -20,11 +24,13 @@ const AdminBulkUpdate = () => {
     try {
       const token = Cookies.get("token");
       const response = await axios.post(
+        addPoints,
         {
-          gameId:
-            selectedGame === "camel"
-              ? "68e41103d62ef35da105ea07"
-              : "68e416481de29e0d724c5a57",
+          gameId: selectedGame,
+          // gameId:
+          //   selectedGame === "camel"
+          //     ? "68e41103d62ef35da105ea07"
+          //     : "68e416481de29e0d724c5a57",
           updates: updatedTeams,
         },
         {
@@ -35,13 +41,36 @@ const AdminBulkUpdate = () => {
         }
       );
 
-      console.log("sent bulk edit successfully");
+      console.log("sent bulk edit successfully", response.data);
       toast.success("sent bulk edit successfully");
     } catch (error) {
       console.error(`Error sending bulk edit: `, error);
       toast.error("Error sending bulk edit.");
     }
   };
+
+  const getGames = async () => {
+    try {
+      const response = await axios.get(getAllGames);
+      console.log("Games fetched: ", response.data);
+
+      // const gameNames = response.data.data.map(game => game.gameName);
+      const gameDetails = response.data.data;
+      console.log("Game details: ", gameDetails);
+      // console.log("Game names: ", gameNames);
+      setGames(gameDetails);
+
+      if (gameDetails && gameDetails.length > 0) {
+        setSelectedGame(gameDetails[0]._id);
+      }
+    } catch (error) {
+      console.log("Error in fetching games", error);
+    }
+  };
+
+  useEffect(() => {
+    getGames();
+  }, []);
 
   return (
     <>
@@ -53,15 +82,19 @@ const AdminBulkUpdate = () => {
               <Trophy className="h-8 w-8 text-indigo-600" />
               <h2 className="text-3xl font-bold text-gray-900">Record Score</h2>
             </div>
-
+            {console.log("selected game: ", selectedGame)}
             <select
-              value={selectedGame}
-              onChange={(e) => setSelectedGame(e.target.value)}
-              className="w-full sm:w-48 px-4 py-2 border rounded-md text-sm text-black"
-            >
-              <option value="camel">Camel Racing</option>
-              <option value="auction">Auction Game</option>
-            </select>
+  value={selectedGame}
+  onChange={(e) => setSelectedGame(e.target.value)}
+  className="w-full sm:w-48 px-4 py-2 border rounded-md text-sm text-black z-200"
+>
+  {games.map((game) => (
+    <option key={game._id} value={game._id}>
+      {game.gameName}
+    </option>
+  ))}
+</select>
+
           </div>
 
           <AdminBulk handleSubmit={handleSubmit} />

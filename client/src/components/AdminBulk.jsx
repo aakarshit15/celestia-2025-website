@@ -2,10 +2,7 @@ import { useState } from "react";
 import { Trophy } from "lucide-react";
 
 const AdminBulk = ({ handleSubmit }) => {
-  const [teams, setTeams] = useState([
-    { teamId: "", scoreToAdd: "" },
-    { teamId: "", scoreToAdd: "" },
-  ]);
+  const [teams, setTeams] = useState([{ teamId: "", scoreToAdd: "" }]);
 
   const addTeam = () => {
     const updated = [...teams];
@@ -20,6 +17,13 @@ const AdminBulk = ({ handleSubmit }) => {
       scoreToAdd: scoreToAdd,
     };
     setTeams(updated);
+  };
+
+  const subTeam = (index) => {
+    setTeams((prevTeams) => {
+      if (prevTeams.length === 1) return prevTeams; // prevent removing last team
+      return prevTeams.filter((_, i) => i !== index);
+    });
   };
 
   return (
@@ -72,6 +76,12 @@ const AdminBulk = ({ handleSubmit }) => {
               className="w-40 px-3 py-2 border rounded-md text-sm"
               placeholder="Score To Add"
             />
+            <button
+              onClick={() => subTeam(teamIndex)}
+              className="text-lg bg-red-600 text-white hover:underline px-4 py-1 rounded-2xl mb-5 cursor-pointer"
+            >
+              - Team
+            </button>
           </div>
         </div>
       ))}

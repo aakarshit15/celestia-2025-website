@@ -1,13 +1,13 @@
-import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { Users, Trophy, BarChart3 } from 'lucide-react'
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Users, Trophy, BarChart3 } from "lucide-react";
 
 const Navbar = () => {
-  const location = useLocation()
+  const location = useLocation();
 
   const isActive = (path) => {
-    return location.pathname === path
-  }
+    return location.pathname === path;
+  };
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -25,9 +25,9 @@ const Navbar = () => {
             <Link
               to="/admin/register"
               className={`inline-flex items-center px-3 sm:px-4 py-2 border-b-2 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors ${
-                isActive('/register')
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                isActive("/register")
+                  ? "border-indigo-500 text-indigo-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
               <Users className="mr-1 sm:mr-2 h-4 w-4" />
@@ -37,9 +37,9 @@ const Navbar = () => {
             <Link
               to="/admin/scoring"
               className={`inline-flex items-center px-3 sm:px-4 py-2 border-b-2 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors ${
-                isActive('/scoring')
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                isActive("/scoring")
+                  ? "border-indigo-500 text-indigo-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
               <Trophy className="mr-1 sm:mr-2 h-4 w-4" />
@@ -49,9 +49,9 @@ const Navbar = () => {
             <Link
               to="/leaderboard"
               className={`inline-flex items-center px-3 sm:px-4 py-2 border-b-2 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors ${
-                isActive('/leaderboard')
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                isActive("/leaderboard")
+                  ? "border-indigo-500 text-indigo-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
               <BarChart3 className="mr-1 sm:mr-2 h-4 w-4" />
@@ -61,19 +61,30 @@ const Navbar = () => {
             <Link
               to="/admin/camelauction"
               className={`inline-flex items-center px-3 sm:px-4 py-2 border-b-2 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors ${
-                isActive('/admin/camelauction')
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                isActive("/admin/camelauction")
+                  ? "border-indigo-500 text-indigo-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
               <BarChart3 className="mr-1 sm:mr-2 h-4 w-4" />
               Camel/Auction Game
             </Link>
+            <Link
+              to="/admin/bulkupdate"
+              className={`inline-flex items-center px-3 sm:px-4 py-2 border-b-2 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors ${
+                isActive("/admin/bulkupdate")
+                  ? "border-indigo-500 text-indigo-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              <BarChart3 className="mr-1 sm:mr-2 h-4 w-4" />
+              Bulk Update
+            </Link>
           </div>
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
