@@ -15,6 +15,7 @@ import Scoring from "./pages/Scoring.jsx";
 import Register from "./pages/Register.jsx";
 import AdminLogin from "./pages/AdminLogin.jsx";
 import CamelAuction from "./pages/CamelAuction.jsx";
+import AdminBulkUpdate from "./pages/AdminBulkUpdate.jsx";
 import ParticipantHistory from "./pages/ParticipantHistory.jsx";
 import Cookies from "js-cookie";
 import Figma from "./components/Figma.jsx";
@@ -259,6 +260,15 @@ export default function App() {
           element={
             <ProtectedRoute
               element={CamelAuction}
+              allowedRoles={["admin", "superadmin"]}
+            />
+          }
+        />
+        <Route
+          path="/admin/bulkupdate"
+          element={
+            <ProtectedRoute
+              element={AdminBulkUpdate}
               allowedRoles={["admin", "superadmin"]}
             />
           }
