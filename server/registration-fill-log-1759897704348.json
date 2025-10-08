@@ -1,0 +1,372 @@
+{
+  "timestamp": "2025-10-08T04:28:24.347Z",
+  "statistics": {
+    "total": 251,
+    "filled": 206,
+    "notFound": 45,
+    "errors": [
+      {
+        "teamId": "1206",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1207",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1208",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1209",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1210",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1211",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1212",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1213",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1214",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1215",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1216",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1217",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1218",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1219",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1220",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1221",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1222",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1223",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1224",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1225",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1226",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1227",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1228",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1229",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1230",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1231",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1232",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1233",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1234",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1235",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1236",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1237",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1238",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1239",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1240",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1241",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1242",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1243",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1244",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1245",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1246",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1247",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1248",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1249",
+        "reason": "Team ID not found in database"
+      },
+      {
+        "teamId": "1250",
+        "reason": "Team ID not found in database"
+      }
+    ]
+  },
+  "notFoundTeams": [
+    {
+      "teamId": "1206",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1207",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1208",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1209",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1210",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1211",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1212",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1213",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1214",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1215",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1216",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1217",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1218",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1219",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1220",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1221",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1222",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1223",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1224",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1225",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1226",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1227",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1228",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1229",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1230",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1231",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1232",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1233",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1234",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1235",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1236",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1237",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1238",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1239",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1240",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1241",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1242",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1243",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1244",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1245",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1246",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1247",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1248",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1249",
+      "reason": "Team ID not found in database"
+    },
+    {
+      "teamId": "1250",
+      "reason": "Team ID not found in database"
+    }
+  ]
+}

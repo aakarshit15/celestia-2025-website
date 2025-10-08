@@ -614,7 +614,7 @@ export const changePointsByTeamId = async (req, res) => {
 
 export const bulkUpdatePoints = async (req, res) => {
   try {
-    const { updates } = req.body;
+    const { updates, gameId } = req.body;
 
     // Validation
     if (!updates || !Array.isArray(updates) || updates.length === 0) {
@@ -645,6 +645,17 @@ export const bulkUpdatePoints = async (req, res) => {
               400
             )
           );
+      }
+    }
+
+    // Validate gameId if provided
+    let game = null;
+    if (gameId) {
+      game = await Game.findById(gameId);
+      if (!game) {
+        return res
+          .status(404)
+          .json(formatResponse(null, "Game not found", 404));
       }
     }
 
@@ -690,7 +701,7 @@ export const bulkUpdatePoints = async (req, res) => {
 
         // Add to game progress
         participant.gameProgress.push({
-          gameId: null, // Custom points adjustment
+          gameId: gameId || null, // Use provided gameId or null for custom adjustment
           points: pointsToAdd,
           assignedBy: {
             adminId: req.adminId,
@@ -700,9 +711,13 @@ export const bulkUpdatePoints = async (req, res) => {
           penalty: {
             reason:
               reason ||
-              `Bulk points adjustment: ${
-                pointsToAdd > 0 ? "+" : ""
-              }${pointsToAdd} points`,
+              (game
+                ? `${game.gameName}: ${
+                    pointsToAdd > 0 ? "+" : ""
+                  }${pointsToAdd} points`
+                : `Bulk points adjustment: ${
+                    pointsToAdd > 0 ? "+" : ""
+                  }${pointsToAdd} points`),
             isDeduction: pointsToAdd < 0,
           },
         });
@@ -718,7 +733,8 @@ export const bulkUpdatePoints = async (req, res) => {
           pointsAdded: pointsToAdd,
           previousPoints,
           newTotalPoints: participant.totalPoints,
-          reason: reason || "Bulk points adjustment",
+          gameName: game ? game.gameName : "Custom Adjustment",
+          reason: reason || (game ? game.gameName : "Bulk points adjustment"),
         });
       } catch (error) {
         results.failed.push({
@@ -738,7 +754,9 @@ export const bulkUpdatePoints = async (req, res) => {
 
     const message =
       results.failed.length === 0
-        ? `All ${results.successful.length} teams updated successfully by ${req.adminName}`
+        ? `All ${results.successful.length} teams updated successfully by ${
+            req.adminName
+          }${game ? ` for ${game.gameName}` : ""}`
         : results.successful.length === 0
         ? "All updates failed"
         : `Partial success: ${results.successful.length} succeeded, ${results.failed.length} failed`;
@@ -751,6 +769,7 @@ export const bulkUpdatePoints = async (req, res) => {
             successful: results.successful.length,
             failed: results.failed.length,
             updatedBy: req.adminName,
+            gameName: game ? game.gameName : null,
             timestamp: new Date(),
           },
           successful: results.successful,
