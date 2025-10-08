@@ -14,10 +14,7 @@ const HEADER_EASING = "easeOut";
 const TABLE_DELAY = HEADER_DURATION + 0.2;
 
 const Leaderboard = () => {
-
-  const [leaderboard, setLeaderboard] = useState(
-    JSON.parse(localStorage.getItem("leaderboard")) || []
-  );
+  const [leaderboard, setLeaderboard] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   // Filtered leaderboard based on search
@@ -40,6 +37,7 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
+        console.log(getLeaderboard);
         const response = await axios.get(getLeaderboard);
         const data = await response.data.data;
         console.log("Fetched leaderboard data:", data);

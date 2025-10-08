@@ -7,58 +7,42 @@ const FlappyBird = () => {
   const canvasRef = useRef(null);
   const [gameState, setGameState] = useState("start");
 
-  let gravityVar = 0.25;
-  let jumpVar = 8;
-
-  // Bird properties
   const bird = useRef(200);
   const speed = useRef(0);
-  const gravity = useRef(gravityVar); // faster fall
-  const jump = useRef(jumpVar); // stronger jump to balance gravity
-  const strongJump = -8; // stronger jump for higher score
+  const gravity = 0.25;
+  const jump = useRef(-8);
+  const strongJump = -10;
 
-  // Obstacles
   const obstacles = useRef([]);
-
-  // Score
   const score = useRef(0);
+  const pillarSpeed = useRef(1.5);
 
-  // Pillar speed
-  const pillarSpeed = useRef(3.5); // faster pillar movement
-
-  // Difficulty scaling
-  const difficultyTimer = useRef(0);
-
-  // Background animation for mobile
   const bgOffset = useRef(0);
   const isMobile = useRef(window.innerWidth <= 768);
   const bgWidth = useRef(0);
   const bgHeight = useRef(0);
 
-  // Game over timer
   const gameOverTimer = useRef(null);
   const showRestart = useRef(false);
 
-  // Images
   const bg = useRef(new Image());
   bg.current.src = bgImg;
   bg.current.onload = () => {
     bgWidth.current = bg.current.width;
     bgHeight.current = bg.current.height;
   };
+
   const pillarImg = useRef(new Image());
   pillarImg.current.src = pillarImgSrc;
   const birdImgRef = useRef(new Image());
   birdImgRef.current.src = birdImg;
 
-  // Basic page styling
   useEffect(() => {
     document.body.style.margin = "0";
     document.body.style.padding = "0";
     document.body.style.overflow = "hidden";
   }, []);
 
-  // Canvas resizing
   useEffect(() => {
     const canvas = canvasRef.current;
     const resizeCanvas = () => {
@@ -71,7 +55,6 @@ const FlappyBird = () => {
     return () => window.removeEventListener("resize", resizeCanvas);
   }, []);
 
-  // Start restart timer when game over
   useEffect(() => {
     if (gameState === "gameOver") {
       showRestart.current = false;
@@ -87,13 +70,16 @@ const FlappyBird = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     let frameId;
+    let lastTime = performance.now();
 
     const MIN_PIPE_HEIGHT = 50;
-    const GAP_MIN = 320;
-    const GAP_MAX = 400;
+    const GAP_MIN = 350;
+    const GAP_MAX = 450;
     const birdX = 80;
     const birdWidth = 80;
-    const birdHeight = 100;
+    const birdHeight = 120;
+
+    const timeScale = 1.6; // <<==== speed multiplier
 
     const drawBird = () => {
       ctx.drawImage(
@@ -136,16 +122,8 @@ const FlappyBird = () => {
       ctx.textAlign = "center";
       ctx.lineWidth = Math.max(titleSize / 10, 8);
       ctx.strokeStyle = "#8B4513";
-      ctx.strokeText(
-        "Flappy Bird",
-        canvas.width / 2,
-        canvas.height / 2 - canvas.height / 8
-      );
-      ctx.fillText(
-        "Flappy Bird",
-        canvas.width / 2,
-        canvas.height / 2 - canvas.height / 8
-      );
+      ctx.strokeText("Flappy Bird", canvas.width / 2, canvas.height / 2 - canvas.height / 8);
+      ctx.fillText("Flappy Bird", canvas.width / 2, canvas.height / 2 - canvas.height / 8);
 
       ctx.shadowBlur = 0;
       ctx.shadowOffsetX = 0;
@@ -196,14 +174,13 @@ const FlappyBird = () => {
 
       ctx.fillStyle = "white";
       ctx.font = "20px Arial";
-      ctx.fillText(
-        `Your Score is: ${score.current}`,
-        canvas.width / 2,
-        canvas.height / 2 + 20
-      );
+      ctx.fillText(`Your Score is: ${score.current}`, canvas.width / 2, canvas.height / 2 + 20);
     };
 
-    const gameLoop = () => {
+    const gameLoop = (time) => {
+      const deltaTime = ((time - lastTime) / 16.67) * timeScale; // <-- adjusted
+      lastTime = time;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Background scrolling
@@ -211,23 +188,11 @@ const FlappyBird = () => {
         const scale = canvas.height / bgHeight.current;
         const scaledWidth = bgWidth.current * scale;
         if (gameState === "playing" || gameState === "gameOver") {
-          bgOffset.current -= 2;
+          bgOffset.current -= 1 * deltaTime;
           if (bgOffset.current <= -scaledWidth) bgOffset.current = 0;
         }
-        ctx.drawImage(
-          bg.current,
-          bgOffset.current,
-          0,
-          scaledWidth,
-          canvas.height
-        );
-        ctx.drawImage(
-          bg.current,
-          bgOffset.current + scaledWidth,
-          0,
-          scaledWidth,
-          canvas.height
-        );
+        ctx.drawImage(bg.current, bgOffset.current, 0, scaledWidth, canvas.height);
+        ctx.drawImage(bg.current, bgOffset.current + scaledWidth, 0, scaledWidth, canvas.height);
       } else {
         ctx.drawImage(bg.current, 0, 0, canvas.width, canvas.height);
       }
@@ -237,27 +202,21 @@ const FlappyBird = () => {
       if (gameState === "playing") {
         if (score.current >= 20) jump.current = strongJump;
 
-        // Increase difficulty faster over time
-        difficultyTimer.current++;
-        if (difficultyTimer.current % 180 === 0) {
-          if (pillarSpeed.current < 12) pillarSpeed.current += 0.25;
-          // if (gravity.current < 1.3) gravity.current += 0.03;
-          if (jump.current > -16) jump.current -= 0.3;
-        }
-
-        speed.current += gravity.current;
-        bird.current += speed.current;
+        speed.current += gravity * deltaTime;
+        bird.current += speed.current * deltaTime;
         drawBird();
 
-        // Spawn pillars
+        if (pillarSpeed.current < 10) pillarSpeed.current += 0.002 * deltaTime;
+
         const lastPillar = obstacles.current[obstacles.current.length - 1];
-        const distanceBetween = Math.random() * (380 - 260) + 260;
+        const minDistance = 300;
+        const maxDistance = 430;
+        const distanceBetween = Math.random() * (maxDistance - minDistance) + minDistance;
 
         if (!lastPillar || lastPillar.x < canvas.width - distanceBetween) {
           const randomGap = Math.random() * (GAP_MAX - GAP_MIN) + GAP_MIN;
           const maxTopHeight = canvas.height - randomGap - MIN_PIPE_HEIGHT;
-          const topHeight =
-            Math.random() * (maxTopHeight - MIN_PIPE_HEIGHT) + MIN_PIPE_HEIGHT;
+          const topHeight = Math.random() * (maxTopHeight - MIN_PIPE_HEIGHT) + MIN_PIPE_HEIGHT;
 
           obstacles.current.push({
             x: canvas.width,
@@ -268,8 +227,7 @@ const FlappyBird = () => {
         }
 
         obstacles.current.forEach((obs, index) => {
-          obs.x -= pillarSpeed.current;
-
+          obs.x -= pillarSpeed.current * deltaTime;
           const pipeWidth = 60;
           ctx.drawImage(pillarImg.current, obs.x, 0, pipeWidth, obs.top);
           ctx.drawImage(
@@ -280,7 +238,6 @@ const FlappyBird = () => {
             canvas.height - obs.bottom
           );
 
-          // Collision detection
           const collisionPadding = 20;
           const hitX =
             birdX + birdWidth / 2 - collisionPadding > obs.x &&
@@ -299,9 +256,7 @@ const FlappyBird = () => {
           if (obs.x + pipeWidth < 0) obstacles.current.splice(index, 1);
         });
 
-        if (bird.current + birdHeight / 2 > canvas.height)
-          setGameState("gameOver");
-
+        if (bird.current + birdHeight / 2 > canvas.height) setGameState("gameOver");
         drawScore();
       }
 
@@ -325,35 +280,26 @@ const FlappyBird = () => {
           ctx.fillStyle = "white";
           ctx.font = "20px Arial";
           ctx.textAlign = "center";
-          ctx.fillText(
-            "Click or press SPACE to restart",
-            canvas.width / 2,
-            canvas.height / 2 + 60
-          );
+          ctx.fillText("Click or press SPACE to restart", canvas.width / 2, canvas.height / 2 + 60);
         }
       }
 
       frameId = requestAnimationFrame(gameLoop);
     };
 
-    gameLoop();
+    frameId = requestAnimationFrame(gameLoop);
     return () => cancelAnimationFrame(frameId);
   }, [gameState]);
 
   const handleClick = () => {
-    if (
-      gameState === "start" ||
-      (gameState === "gameOver" && showRestart.current)
-    ) {
+    if (gameState === "start" || (gameState === "gameOver" && showRestart.current)) {
       setGameState("playing");
       bird.current = 200;
       speed.current = 0;
       score.current = 0;
       obstacles.current = [];
-      pillarSpeed.current = 3.5;
-      gravity.current = gravityVar;
-      jump.current = -jumpVar;
-      difficultyTimer.current = 0;
+      pillarSpeed.current = 1.5;
+      jump.current = -8;
       showRestart.current = false;
       if (gameOverTimer.current) clearTimeout(gameOverTimer.current);
     } else if (gameState === "playing") {
