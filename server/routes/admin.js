@@ -1,9 +1,6 @@
 import express from "express";
 import { adminController } from "../controllers/index.js";
-import {
-  authenticateAdmin,
-  logActivity,
-} from "../middleware/auth.js";
+import { authenticateAdmin, logActivity } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -11,17 +8,9 @@ router.post("/login", adminController.loginAdmin);
 
 router.get("/profile", authenticateAdmin, adminController.getAdminProfile);
 
-router.post(
-  "/create",
-  authenticateAdmin,
-  adminController.createAdmin
-);
+router.post("/create", authenticateAdmin, adminController.createAdmin);
 
-router.get(
-  "/all",
-  authenticateAdmin,
-  adminController.getAllAdmins
-);
+router.get("/all", authenticateAdmin, adminController.getAllAdmins);
 
 router.get(
   "/activity-logs/:adminId",
@@ -64,6 +53,14 @@ router.post(
   authenticateAdmin,
   logActivity("SUBTRACT_POINTS"),
   adminController.changePointsByTeamId
+);
+
+// Admin route - bulk update points for multiple teams
+router.post(
+  "/bulk-update-points",
+  authenticateAdmin,
+  logActivity("BULK_UPDATE_POINTS"),
+  adminController.bulkUpdatePoints
 );
 
 export default router;

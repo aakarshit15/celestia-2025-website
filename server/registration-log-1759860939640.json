@@ -1,0 +1,133 @@
+{
+  "timestamp": "2025-10-07T18:15:39.639Z",
+  "statistics": {
+    "total": 201,
+    "successful": 201,
+    "failed": 0,
+    "skipped": 15,
+    "errors": [
+      {
+        "teamName": "Amar akbar anthony",
+        "reason": "Duplicate email in CSV (also in Amar Akbar Anthony)"
+      },
+      {
+        "teamName": "Amar Akbar Anthony",
+        "reason": "Duplicate email in CSV (also in Amar Akbar Anthony)"
+      },
+      {
+        "teamName": "Infinite Illusion",
+        "reason": "Duplicate email in CSV (also in Infinite illusion)"
+      },
+      {
+        "teamName": "Infinite Illusion",
+        "reason": "Duplicate email in CSV (also in Infinite illusion)"
+      },
+      {
+        "teamName": "Jsj",
+        "reason": "Invalid data"
+      },
+      {
+        "teamName": "NA",
+        "reason": "Invalid data"
+      },
+      {
+        "teamName": "Syntax Slayers",
+        "reason": "Invalid data"
+      },
+      {
+        "teamName": "Team Codefrenzy",
+        "reason": "Invalid data"
+      },
+      {
+        "teamName": "Team rocket",
+        "reason": "Duplicate email in CSV (also in TEAM ROCKET)"
+      },
+      {
+        "teamName": "TEAM ROCKET",
+        "reason": "Duplicate email in CSV (also in TEAM ROCKET)"
+      },
+      {
+        "teamName": "Team Rocket",
+        "reason": "Duplicate email in CSV (also in TEAM ROCKET)"
+      },
+      {
+        "teamName": "The B0YS",
+        "reason": "Duplicate email in CSV (also in Decrypters)"
+      },
+      {
+        "teamName": "The Knight Riders",
+        "reason": "Duplicate email in CSV (also in Knight Riders)"
+      },
+      {
+        "teamName": "TheFirstKings",
+        "reason": "Duplicate email in CSV (also in TheFirstKings)"
+      },
+      {
+        "teamName": "TSTS",
+        "reason": "Invalid data"
+      }
+    ]
+  },
+  "errors": [
+    {
+      "teamName": "Amar akbar anthony",
+      "reason": "Duplicate email in CSV (also in Amar Akbar Anthony)"
+    },
+    {
+      "teamName": "Amar Akbar Anthony",
+      "reason": "Duplicate email in CSV (also in Amar Akbar Anthony)"
+    },
+    {
+      "teamName": "Infinite Illusion",
+      "reason": "Duplicate email in CSV (also in Infinite illusion)"
+    },
+    {
+      "teamName": "Infinite Illusion",
+      "reason": "Duplicate email in CSV (also in Infinite illusion)"
+    },
+    {
+      "teamName": "Jsj",
+      "reason": "Invalid data"
+    },
+    {
+      "teamName": "NA",
+      "reason": "Invalid data"
+    },
+    {
+      "teamName": "Syntax Slayers",
+      "reason": "Invalid data"
+    },
+    {
+      "teamName": "Team Codefrenzy",
+      "reason": "Invalid data"
+    },
+    {
+      "teamName": "Team rocket",
+      "reason": "Duplicate email in CSV (also in TEAM ROCKET)"
+    },
+    {
+      "teamName": "TEAM ROCKET",
+      "reason": "Duplicate email in CSV (also in TEAM ROCKET)"
+    },
+    {
+      "teamName": "Team Rocket",
+      "reason": "Duplicate email in CSV (also in TEAM ROCKET)"
+    },
+    {
+      "teamName": "The B0YS",
+      "reason": "Duplicate email in CSV (also in Decrypters)"
+    },
+    {
+      "teamName": "The Knight Riders",
+      "reason": "Duplicate email in CSV (also in Knight Riders)"
+    },
+    {
+      "teamName": "TheFirstKings",
+      "reason": "Duplicate email in CSV (also in TheFirstKings)"
+    },
+    {
+      "teamName": "TSTS",
+      "reason": "Invalid data"
+    }
+  ]
+}

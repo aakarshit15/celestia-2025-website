@@ -1,0 +1,68 @@
+{
+  "timestamp": "2025-10-08T03:10:25.830Z",
+  "statistics": {
+    "total": 208,
+    "found": 201,
+    "notFound": 7,
+    "errors": [
+      {
+        "teamName": "ctrl+4",
+        "reason": "Not found in database"
+      },
+      {
+        "teamName": "Jsj",
+        "reason": "Not found in database"
+      },
+      {
+        "teamName": "NA",
+        "reason": "Not found in database"
+      },
+      {
+        "teamName": "SSY (Sassy Smart Youth)",
+        "reason": "Not found in database"
+      },
+      {
+        "teamName": "Team Codefrenzy",
+        "reason": "Not found in database"
+      },
+      {
+        "teamName": "The B0YS",
+        "reason": "Not found in database"
+      },
+      {
+        "teamName": "The Knight Riders",
+        "reason": "Not found in database"
+      }
+    ]
+  },
+  "notFoundTeams": [
+    {
+      "teamName": "ctrl+4",
+      "reason": "Not found in database"
+    },
+    {
+      "teamName": "Jsj",
+      "reason": "Not found in database"
+    },
+    {
+      "teamName": "NA",
+      "reason": "Not found in database"
+    },
+    {
+      "teamName": "SSY (Sassy Smart Youth)",
+      "reason": "Not found in database"
+    },
+    {
+      "teamName": "Team Codefrenzy",
+      "reason": "Not found in database"
+    },
+    {
+      "teamName": "The B0YS",
+      "reason": "Not found in database"
+    },
+    {
+      "teamName": "The Knight Riders",
+      "reason": "Not found in database"
+    }
+  ]
+}

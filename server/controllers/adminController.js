@@ -609,3 +609,158 @@ export const changePointsByTeamId = async (req, res) => {
     handleError(error, res);
   }
 };
+
+// Add this to your existing adminController.js file
+
+export const bulkUpdatePoints = async (req, res) => {
+  try {
+    const { updates } = req.body;
+
+    // Validation
+    if (!updates || !Array.isArray(updates) || updates.length === 0) {
+      return res
+        .status(400)
+        .json(
+          formatResponse(
+            null,
+            "Updates array is required and must not be empty",
+            400
+          )
+        );
+    }
+
+    // Validate each update entry
+    for (const update of updates) {
+      if (
+        !update.teamId ||
+        update.scoreToAdd === undefined ||
+        update.scoreToAdd === null
+      ) {
+        return res
+          .status(400)
+          .json(
+            formatResponse(
+              null,
+              "Each update must have teamId and scoreToAdd",
+              400
+            )
+          );
+      }
+    }
+
+    const results = {
+      successful: [],
+      failed: [],
+      total: updates.length,
+    };
+
+    // Process each update
+    for (const update of updates) {
+      try {
+        const { teamId, scoreToAdd, reason } = update;
+        const pointsToAdd = parseInt(scoreToAdd);
+
+        // Find participant
+        const participant = await Participant.findOne({
+          teamId: parseInt(teamId),
+        });
+
+        if (!participant) {
+          results.failed.push({
+            teamId,
+            reason: "Team not found",
+          });
+          continue;
+        }
+
+        // Check if trying to subtract more points than available
+        if (
+          pointsToAdd < 0 &&
+          participant.totalPoints < Math.abs(pointsToAdd)
+        ) {
+          results.failed.push({
+            teamId,
+            teamName: participant.teamName,
+            reason: `Insufficient points. Team has ${
+              participant.totalPoints
+            } points, cannot subtract ${Math.abs(pointsToAdd)}`,
+          });
+          continue;
+        }
+
+        // Add to game progress
+        participant.gameProgress.push({
+          gameId: null, // Custom points adjustment
+          points: pointsToAdd,
+          assignedBy: {
+            adminId: req.adminId,
+            adminName: req.adminName,
+            adminEmail: req.adminEmail,
+          },
+          penalty: {
+            reason:
+              reason ||
+              `Bulk points adjustment: ${
+                pointsToAdd > 0 ? "+" : ""
+              }${pointsToAdd} points`,
+            isDeduction: pointsToAdd < 0,
+          },
+        });
+
+        // Update total points
+        const previousPoints = participant.totalPoints;
+        participant.totalPoints += pointsToAdd;
+        await participant.save();
+
+        results.successful.push({
+          teamId: participant.teamId,
+          teamName: participant.teamName,
+          pointsAdded: pointsToAdd,
+          previousPoints,
+          newTotalPoints: participant.totalPoints,
+          reason: reason || "Bulk points adjustment",
+        });
+      } catch (error) {
+        results.failed.push({
+          teamId: update.teamId,
+          reason: error.message,
+        });
+      }
+    }
+
+    // Determine response status
+    const status =
+      results.failed.length === 0
+        ? 200
+        : results.successful.length === 0
+        ? 400
+        : 207; // Multi-Status
+
+    const message =
+      results.failed.length === 0
+        ? `All ${results.successful.length} teams updated successfully by ${req.adminName}`
+        : results.successful.length === 0
+        ? "All updates failed"
+        : `Partial success: ${results.successful.length} succeeded, ${results.failed.length} failed`;
+
+    res.status(status).json(
+      formatResponse(
+        {
+          summary: {
+            total: results.total,
+            successful: results.successful.length,
+            failed: results.failed.length,
+            updatedBy: req.adminName,
+            timestamp: new Date(),
+          },
+          successful: results.successful,
+          failed: results.failed,
+        },
+        message,
+        status
+      )
+    );
+  } catch (error) {
+    handleError(error, res);
+  }
+};
