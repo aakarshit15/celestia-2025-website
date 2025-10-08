@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import bgImg from "../../../assets/bgimage.png";
+import { Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import HomeBtn from "../../../components/HomeBtn";
 
 const InfoIcon = () => (
   <svg
@@ -403,6 +406,9 @@ export default function WordleArabian() {
       className="min-h-screen text-yellow-400 relative overflow-x-hidden bg-cover"
       style={{ backgroundImage: `url('${bgImg}')` }}
     >
+
+      <HomeBtn />
+
       <div className="absolute inset-0 bg-black/30 z-0"></div>
 
       <div className="relative z-10 gap-5 mx-auto p-5 min-h-screen flex flex-row">

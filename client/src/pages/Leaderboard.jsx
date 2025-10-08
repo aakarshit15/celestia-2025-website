@@ -7,6 +7,7 @@ import { getLeaderboard } from "../apis/leaderboard.api";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import HomeBtn from "../components/HomeBtn";
 
 // Animation constants
 const HEADER_DURATION = 0.8;
@@ -93,6 +94,7 @@ const Leaderboard = () => {
       className="min-h-screen w-full inset-x-0 flex flex-col items-center bg-cover bg-center relative overflow-x-hidden"
       style={{ backgroundImage: `url('/bg2.jpg')` }}
     >
+      <HomeBtn type="left" />
       {/* Back button CONTAINER - Positioned absolutely to avoid affecting the main flow */}
       <motion.div
         className="absolute top-6 right-4 z-20"

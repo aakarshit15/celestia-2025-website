@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import bgImg from "../../../assets/flappybird_bg.png";
 import pillarImgSrc from "../../../assets/pillar.png";
 import birdImg from "../../../assets/aladin.png";
+import HomeBtn from "../../../components/HomeBtn.jsx";
 
 const FlappyBird = () => {
   const canvasRef = useRef(null);
@@ -122,8 +123,16 @@ const FlappyBird = () => {
       ctx.textAlign = "center";
       ctx.lineWidth = Math.max(titleSize / 10, 8);
       ctx.strokeStyle = "#8B4513";
-      ctx.strokeText("Flappy Bird", canvas.width / 2, canvas.height / 2 - canvas.height / 8);
-      ctx.fillText("Flappy Bird", canvas.width / 2, canvas.height / 2 - canvas.height / 8);
+      ctx.strokeText(
+        "Flappy Bird",
+        canvas.width / 2,
+        canvas.height / 2 - canvas.height / 8
+      );
+      ctx.fillText(
+        "Flappy Bird",
+        canvas.width / 2,
+        canvas.height / 2 - canvas.height / 8
+      );
 
       ctx.shadowBlur = 0;
       ctx.shadowOffsetX = 0;
@@ -174,7 +183,11 @@ const FlappyBird = () => {
 
       ctx.fillStyle = "white";
       ctx.font = "20px Arial";
-      ctx.fillText(`Your Score is: ${score.current}`, canvas.width / 2, canvas.height / 2 + 20);
+      ctx.fillText(
+        `Your Score is: ${score.current}`,
+        canvas.width / 2,
+        canvas.height / 2 + 20
+      );
     };
 
     const gameLoop = (time) => {
@@ -191,8 +204,20 @@ const FlappyBird = () => {
           bgOffset.current -= 1 * deltaTime;
           if (bgOffset.current <= -scaledWidth) bgOffset.current = 0;
         }
-        ctx.drawImage(bg.current, bgOffset.current, 0, scaledWidth, canvas.height);
-        ctx.drawImage(bg.current, bgOffset.current + scaledWidth, 0, scaledWidth, canvas.height);
+        ctx.drawImage(
+          bg.current,
+          bgOffset.current,
+          0,
+          scaledWidth,
+          canvas.height
+        );
+        ctx.drawImage(
+          bg.current,
+          bgOffset.current + scaledWidth,
+          0,
+          scaledWidth,
+          canvas.height
+        );
       } else {
         ctx.drawImage(bg.current, 0, 0, canvas.width, canvas.height);
       }
@@ -211,12 +236,14 @@ const FlappyBird = () => {
         const lastPillar = obstacles.current[obstacles.current.length - 1];
         const minDistance = 300;
         const maxDistance = 430;
-        const distanceBetween = Math.random() * (maxDistance - minDistance) + minDistance;
+        const distanceBetween =
+          Math.random() * (maxDistance - minDistance) + minDistance;
 
         if (!lastPillar || lastPillar.x < canvas.width - distanceBetween) {
           const randomGap = Math.random() * (GAP_MAX - GAP_MIN) + GAP_MIN;
           const maxTopHeight = canvas.height - randomGap - MIN_PIPE_HEIGHT;
-          const topHeight = Math.random() * (maxTopHeight - MIN_PIPE_HEIGHT) + MIN_PIPE_HEIGHT;
+          const topHeight =
+            Math.random() * (maxTopHeight - MIN_PIPE_HEIGHT) + MIN_PIPE_HEIGHT;
 
           obstacles.current.push({
             x: canvas.width,
@@ -256,7 +283,8 @@ const FlappyBird = () => {
           if (obs.x + pipeWidth < 0) obstacles.current.splice(index, 1);
         });
 
-        if (bird.current + birdHeight / 2 > canvas.height) setGameState("gameOver");
+        if (bird.current + birdHeight / 2 > canvas.height)
+          setGameState("gameOver");
         drawScore();
       }
 
@@ -280,7 +308,11 @@ const FlappyBird = () => {
           ctx.fillStyle = "white";
           ctx.font = "20px Arial";
           ctx.textAlign = "center";
-          ctx.fillText("Click or press SPACE to restart", canvas.width / 2, canvas.height / 2 + 60);
+          ctx.fillText(
+            "Click or press SPACE to restart",
+            canvas.width / 2,
+            canvas.height / 2 + 60
+          );
         }
       }
 
@@ -292,7 +324,10 @@ const FlappyBird = () => {
   }, [gameState]);
 
   const handleClick = () => {
-    if (gameState === "start" || (gameState === "gameOver" && showRestart.current)) {
+    if (
+      gameState === "start" ||
+      (gameState === "gameOver" && showRestart.current)
+    ) {
       setGameState("playing");
       bird.current = 200;
       speed.current = 0;
@@ -319,12 +354,15 @@ const FlappyBird = () => {
   }, [gameState]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="w-screen h-screen block"
-      onClick={handleClick}
-      onTouchStart={handleClick}
-    />
+    <>
+      <HomeBtn />
+      <canvas
+        ref={canvasRef}
+        className="w-screen h-screen block"
+        onClick={handleClick}
+        onTouchStart={handleClick}
+      />
+    </>
   );
 };
 
